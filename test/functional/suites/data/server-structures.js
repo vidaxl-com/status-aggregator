@@ -12,7 +12,10 @@ module.exports = {
       dc([createHandler(emptySuccessHandler, 'one')], '001 successful', {goodBad: 'ok'})
     ],
     fail: [
-      dc([createHandler(emptyFailHander,'one')], '002 failed',{goodBad: 'bad'})
+      dc([createHandler(emptyFailHander,'one')], '002 failed',
+        {
+          goodBad: 'bad'
+        })
     ]
   },
   more:{

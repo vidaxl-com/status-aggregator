@@ -1,9 +1,5 @@
-const statusGenerator = require('../../../../src')
-  , axios = require('axios')
-  , {expect} = require('chai')
-  , serverStarter = require('../../test-services/serverStarter')
-  , op = require('object-path')
-  , tr = require('../../test-generators/bad-and-good-request-tracer')(serverStarter, statusGenerator, axios, expect)
+const op = require('object-path')
+  , tr = require('../../test-generators/bad-and-good-request-tracer')
 
 module.exports = (dataset, asertPath) => {
   Object.keys(dataset)
