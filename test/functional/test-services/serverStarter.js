@@ -1,0 +1,63 @@
+const dslFramework = require('dsl-framework')()
+const portscanner = require('portscanner')
+const serverShutdownLog = require('debug')('status-aggregator-test:serverShutdown')
+const serverStartupLog = require('debug')('status-aggregator-test:serverStartup')
+
+const defaultHandler = function (req, res) {
+  res.send('Hello World')
+}
+
+let serversCreated = 0
+
+process.on('exit', (code) => {
+  console.log(`${serversCreated} servers created during the tests.`);
+});
+
+module.exports = dslFramework(
+  (e, parameters) => {
+    let handler = parameters.arguments('handler','lastArgument')
+    handler = !!handler ? handler : defaultHandler
+
+    let host = parameters.arguments('host','lastArgument')
+    host = !!host ? host : 'localhost'
+
+    let name = parameters.arguments('name','lastArgument')
+    if(!name) {
+     name = `und-${require('random-string')({length: 5})}`
+    }
+
+    let statusUrlPeice = parameters.arguments('statusUrlPeice','lastArgument')
+    statusUrlPeice = !!statusUrlPeice ? statusUrlPeice : '/status'
+
+    let portFrom = parameters.arguments('portFrom','lastArgument')
+    portFrom = !!portFrom ? portFrom : 3000
+
+    let portTo = parameters.arguments('portTo','lastArgument')
+    portTo = !!portTo ? portTo : 4000
+
+    const returnObject = {}
+
+    return new Promise(async (resolve, reject) => {
+      const app = require('./new-app')()
+
+      app.get(statusUrlPeice, handler)
+      const port = await portscanner.findAPortNotInUse(portFrom, portTo).then(function(port) {
+        return port
+      })
+      returnObject['name'] = name
+      returnObject['host'] = host
+      returnObject['port'] = port
+      returnObject['statusUrlPeice'] = statusUrlPeice
+      returnObject['getBaseUrl'] = function(){ return 'http://' + this.host + ':' + this.port }
+      returnObject['getStatusUrl'] = function(){ return `${this.getBaseUrl()}${this.statusUrlPeice}`  }
+      returnObject['serverIdentifier'] = function(){ return `server "${returnObject.name}"; port: ${returnObject.port};`}
+      returnObject['stop'] = function () {
+        serverShutdownLog(`${returnObject.serverIdentifier()} stopped.`)
+        this.server.close()
+      }
+      serverStartupLog(`${returnObject.serverIdentifier()} started.`)
+      serversCreated++
+      returnObject['server'] = app.listen(port, resolve(returnObject))
+    })
+  }
+)

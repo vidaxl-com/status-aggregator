@@ -1,0 +1,48 @@
+const arrify = require('arrify')
+  , debugTraffic = require('debug')('status-aggregator-test:trafficDetails')
+  , callDetails = require('debug')('status-aggregator-test:callDetails')
+
+module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers = []) => {
+  let servers = []
+  serviceHandlers = arrify(serviceHandlers)
+  return new Promise(async (resolve, reject) => {
+    // let servers = []
+    for(let i = 0; i < serviceHandlers.length; i++){
+      const serviceHandler = serviceHandlers[i]
+      const isHandlerArray = Array.isArray(serviceHandler)
+      if(!isHandlerArray){
+        servers.push(await serverStarter.handler([(req, res, next)=>{
+          debugTraffic(`${serviceHandler.name} is called`)
+          next()
+        },serviceHandler.handler]).name(serviceHandler.name)())
+        allServers.push(servers[servers.length-1])
+      }
+      if(isHandlerArray){
+        let newServerGroup = await module.exports(serverStarter, statusGenerator, serviceHandler, allServers)
+        servers.push(newServerGroup.serverN)
+        allServers.push(newServerGroup.serverN)
+      }
+    }
+
+    let serverN = await serverStarter.handler([
+      (req, res, next) => {
+        // debugTraffic(`<-initiated-traffic-from-host->`)
+        next()
+      },
+      (req, res) => {
+        for(let i = 0; i < servers.length; i++){
+          statusGenerator.addApi(servers[i].getStatusUrl())
+          callDetails(servers[i].getStatusUrl())
+        }
+        statusGenerator.addResponse(res)()
+      }])()
+    allServers.push(serverN)
+    resolve( {
+      allServers,
+      servers, serverN,
+      stop: function(){
+        this.allServers.forEach(server=>server.stop())
+      }
+    })
+  })
+}
