@@ -1,6 +1,7 @@
 const dslFramework = require('dsl-framework').noPromoises()
-const axios = require('axios')
 const aFlatten = require('array-flatten')
+const apiGetter = require('./data-getters/status-aggregator')
+
 const responseSenderAdapter = (isRresifyResponse) => {
   if(isRresifyResponse){
     return (res, data) => res.json(200, data);
@@ -19,32 +20,21 @@ module.exports= dslFramework(
     const apis = parameters.arguments('addApi', 'allEntries')
     const res = parameters.arguments('addResponse', 'lastArgument')
     const isResifyResponse = parameters.command.has('resifyResponse')
-
+    let requestTimeout = parameters.arguments('timeout', 'lastArgument')
+    requestTimeout = requestTimeout ? requestTimeout : 1000
     require('./validators/apis')(apis)
 
     return new Promise(async (resolve, reject) => {
-      let results = []
-      let weHaveApis = !!apis
-      let msg = ''
-
-      if (weHaveApis) {
-        apisFlattened = aFlatten(apis)
-        for (let i = 0; i < apisFlattened.length; i++) {
-          try{
-            results.push(await axios.get(apisFlattened[i],{
-              validateStatus: function (status) {
-                return status >= 200 && status < 600; // default
-              }
-            }))
-          }
-          catch (e) {
-            msg += `Connecting to ${e.request._currentUrl} was not successful \n`
-          }
-        }
-        let somethingWentWrongDuringTheCommunitcation =
+      let weDontHaveAnyApis = !!apis
+      let generatedResults = []
+      if (weDontHaveAnyApis) {
+        const {results, msg}= await apiGetter(apis,requestTimeout).catch(e => l(e)())
+        generatedResults = results
+        // l(Object.keys(results).length)()
+        const somethingWentWrongDuringTheCommunitcation =
           !!results.filter(item => item.status !== 200).length || !Object.keys(results).length
 
-        let allFine = !somethingWentWrongDuringTheCommunitcation
+        const allFine = !somethingWentWrongDuringTheCommunitcation
         if(allFine){
           let badApiResponses = []
           for (let i = 0; i < results.length; i++) {
@@ -65,10 +55,10 @@ module.exports= dslFramework(
           notOkStatus(isResifyResponse)(res, {msg})
         }
       }
-      if (!weHaveApis) {
+      if (!weDontHaveAnyApis) {
         okStatus(isResifyResponse)(res)
       }
-      resolve(results)
+      resolve(generatedResults)
     })
   }
 )

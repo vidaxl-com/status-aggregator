@@ -1,4 +1,5 @@
 process.env.DEBUG = ' express:, status-aggregator-test:*'
+require('cowlog')()
   const serverStructures = require('./suites/data/server-structures')
   , suiteRunner = require('./suites/data/suiter-runner')
 
