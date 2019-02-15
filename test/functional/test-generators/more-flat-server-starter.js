@@ -1,6 +1,7 @@
 const arrify = require('arrify')
   , debugTraffic = require('debug')('status-aggregator-test:trafficDetails')
   , callDetails = require('debug')('status-aggregator-test:callDetails')
+  , arrayDsl = require('array-dsl')
 
 module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers = []) => {
   let servers = []
@@ -41,7 +42,7 @@ module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers =
       allServers,
       servers, serverN,
       stop: function(){
-        this.allServers.forEach(server=>server.stop())
+        arrayDsl(this.allServers).unique().forEach(server=>server.stop())
       }
     })
   })

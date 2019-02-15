@@ -1,8 +1,9 @@
 const dslFramework = require('dsl-framework').noPromoises()
-const aFlatten = require('array-flatten')
 const apiGetter = require('./data-getters/status-aggregator')
+const flatten = require('array-flatten')
 
 const responseSenderAdapter = (isRresifyResponse) => {
+
   if(isRresifyResponse){
     return (res, data) => res.json(200, data);
   }
@@ -11,13 +12,16 @@ const responseSenderAdapter = (isRresifyResponse) => {
   }
 }
   , okStatus = (isRresifyResponse) =>
-  (res) => responseSenderAdapter(isRresifyResponse)(res,{status:'ok'})
+  (res, data) => responseSenderAdapter(isRresifyResponse)(res, Object.assign({status:'ok'}, data))
   , notOkStatus = (isRresifyResponse) =>
-  (res, data) => responseSenderAdapter(isRresifyResponse)(res,Object.assign({status:'bad'}, data))
+  (res, data) => responseSenderAdapter(isRresifyResponse)
+    (res, Object.assign({status:'bad'}, data))
 
 module.exports= dslFramework(
   (e, parameters) => {
     const apis = parameters.arguments('addApi', 'allEntries')
+    let extraData = parameters.arguments('addExtraData', 'allEntries')
+    extraData = !!extraData ? flatten(extraData) : false
     const res = parameters.arguments('addResponse', 'lastArgument')
     const isResifyResponse = parameters.command.has('resifyResponse')
     let requestTimeout = parameters.arguments('timeout', 'lastArgument')
@@ -25,6 +29,10 @@ module.exports= dslFramework(
     require('./validators/apis')(apis)
 
     return new Promise(async (resolve, reject) => {
+      let dataSent = {}
+      if(extraData){
+        dataSent.extraData = extraData
+      }
       let weDontHaveAnyApis = !!apis
       let generatedResults = []
       if (weDontHaveAnyApis) {
@@ -45,18 +53,19 @@ module.exports= dslFramework(
           }
           let weHaveBadResponses = !!badApiResponses.length
           if(weHaveBadResponses){
-            notOkStatus(isResifyResponse)(res)
+            notOkStatus(isResifyResponse)(res, dataSent)
           }
           if(!weHaveBadResponses){
-            okStatus(isResifyResponse)(res)
+            okStatus(isResifyResponse)(res, dataSent)
           }
         }
         if(!allFine){
-          notOkStatus(isResifyResponse)(res, {msg})
+          dataSent.msg = msg
+          notOkStatus(isResifyResponse)(res, dataSent)
         }
       }
       if (!weDontHaveAnyApis) {
-        okStatus(isResifyResponse)(res)
+        okStatus(isResifyResponse)(res, dataSent)
       }
       resolve(generatedResults)
     })

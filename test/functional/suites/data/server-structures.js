@@ -9,7 +9,7 @@ module.exports = {
   oneserver:{
     description: 'simple one-server tests',
     success: [
-      dc([createHandler(emptySuccessHandler, 'one')], '001 successful', {goodBad: 'ok'})
+      dc([createHandler(emptySuccessHandler(), 'one')], '001 successful', {goodBad: 'ok'})
     ],
     fail: [
       dc([createHandler(emptyFailHander,'one')], '002 failed',
@@ -25,37 +25,37 @@ module.exports = {
       success:[
 
         dc([
-          createHandler(emptySuccessHandler,'one'),
-          createHandler(emptySuccessHandler,'two')
+          createHandler(emptySuccessHandler(),'one'),
+          createHandler(emptySuccessHandler(),'two')
         ], '003 successful 1', {goodBad: 'ok'}),
 
         dc([
-          createHandler(emptySuccessHandler,'one'),
-          createHandler(emptySuccessHandler,'two'),
-          createHandler(emptySuccessHandler,'three')
+          createHandler(emptySuccessHandler(),'one'),
+          createHandler(emptySuccessHandler(),'two'),
+          createHandler(emptySuccessHandler(),'three')
         ], '004 successful 2', {goodBad: 'ok'})
 
       ] ,
       fail:[
 
         dc([
-          createHandler(emptySuccessHandler,'one'),
+          createHandler(emptySuccessHandler(),'one'),
           createHandler(emptyFailHander,'two')
         ], '005 failed', {goodBad: 'bad'}),
 
         dc([
-          createHandler(emptySuccessHandler,'one'),
+          createHandler(emptySuccessHandler(),'one'),
           createHandler(emptyFailHander,'two')
         ], '005.001 failed', {goodBad: 'bad'}),
 
         dc([
           createHandler(emptyFailHander,'one'),
-          createHandler(emptySuccessHandler,'two')
+          createHandler(emptySuccessHandler(),'two')
         ], '005.002 failed', {goodBad: 'bad'}),
 
         dc([
           createHandler(emptyFailHander,'empty-response'),
-          createHandler(emptySuccessHandler,'two')
+          createHandler(emptySuccessHandler(),'two')
         ], '005.003 failed', {goodBad: 'bad'})
       ]
     },
@@ -63,10 +63,10 @@ module.exports = {
       description: 'Vertical arrangement',
       success:[
         dc([
-          createHandler(emptySuccessHandler,'1'),
+          createHandler(emptySuccessHandler(),'1'),
             [
-              createHandler(emptySuccessHandler,'1.1'),
-              createHandler(emptySuccessHandler,'1.2')
+              createHandler(emptySuccessHandler(),'1.1'),
+              createHandler(emptySuccessHandler(),'1.2')
             ]
           ], '006 none of them fails', {goodBad: 'ok'}),
       ] ,
@@ -75,21 +75,21 @@ module.exports = {
         dc([
             createHandler(emptyFailHander,'1'),
             [
-              createHandler(emptySuccessHandler,'1.1')
+              createHandler(emptySuccessHandler(),'1.1')
             ]
           ], '007 the fist layer fails', {goodBad: 'bad'}),
 
         dc( [
-            createHandler(emptySuccessHandler,'1'),
+            createHandler(emptySuccessHandler(),'1'),
             [
               createHandler(emptyFailHander,'1.1')
             ]
           ],
           '008 the second layer fails', {goodBad: 'bad'}),
 
-        dc( [createHandler(emptySuccessHandler,'1'),
+        dc( [createHandler(emptySuccessHandler(),'1'),
             [
-              createHandler(emptySuccessHandler,'1.1'),
+              createHandler(emptySuccessHandler(),'1.1'),
               [
                 createHandler(emptyFailHander,'1.1')
               ]
@@ -100,17 +100,17 @@ module.exports = {
           createHandler(emptyFailHander,'1'),
             [
               [
-                createHandler(emptySuccessHandler,'1.1')
+                createHandler(emptySuccessHandler(),'1.1')
               ]
             ]
           ],
           '010 one of them fails', {goodBad: 'bad'}),
 
         dc( [
-          createHandler(emptySuccessHandler,'1'),
+          createHandler(emptySuccessHandler(),'1'),
             [
               [
-                createHandler(emptySuccessHandler,'1.1.1'),
+                createHandler(emptySuccessHandler(),'1.1.1'),
                 [
                   createHandler(emptyFailHander,'1.1.1.1')
                 ]

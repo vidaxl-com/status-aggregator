@@ -10,7 +10,7 @@ const axios = require('axios')
 module.exports =   describe('Plain-server suite', ()=>{
 
   it('successful request', async ()=>{
-    const server = await serverStarter.handler(emptySuccessHandler).name('success')()
+    const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.status).to.equal('ok')
     server.stop()
@@ -34,4 +34,15 @@ module.exports =   describe('Plain-server suite', ()=>{
     assert(extractNumbers(data.data.msg).length === 2)
     server.stop()
   })
+
+  it('extraData server', async ()=>{
+    const server = await serverStarter
+      .handler(emptySuccessHandler({addExtraData:['yeah','no']}))
+      .name('extraDataServer')()
+    const data = await axios.get(server.getStatusUrl())
+    expect(data.data.extraData[0]).to.equal('yeah')
+    expect(data.data.extraData[1]).to.equal('no')
+    server.stop()
+  })
+
 })
