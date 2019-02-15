@@ -1,6 +1,6 @@
 {
   "name": "status-aggregator",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Webservice status aggregator",
   "main": "src/index.js",
   "scripts": {

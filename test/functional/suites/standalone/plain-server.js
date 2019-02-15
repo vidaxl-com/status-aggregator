@@ -17,7 +17,7 @@ module.exports =   describe('Plain-server suite', ()=>{
   })
 
   it('failed request', async ()=>{
-    const server = await serverStarter.handler(emptyfailureHandler).name('fail')()
+    const server = await serverStarter.handler(emptyfailureHandler()).name('fail')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.status).to.equal('bad')
     server.stop()
@@ -42,6 +42,17 @@ module.exports =   describe('Plain-server suite', ()=>{
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.extraData[0]).to.equal('yeah')
     expect(data.data.extraData[1]).to.equal('no')
+    server.stop()
+  })
+
+  it('extraData server', async ()=>{
+    const server = await serverStarter
+      .handler(emptySuccessHandler({fail:['I wanted to Fail It']}))
+      .name('extraDataServer')()
+    const data = await axios.get(server.getStatusUrl())
+    expect(data.data.status).to.equal('bad')
+    // expect(data.data.extraData[0]).to.equal('yeah')
+    // expect(data.data.extraData[1]).to.equal('no')
     server.stop()
   })
 

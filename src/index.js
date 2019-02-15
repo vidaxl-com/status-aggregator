@@ -26,12 +26,19 @@ module.exports= dslFramework(
     const isResifyResponse = parameters.command.has('resifyResponse')
     let requestTimeout = parameters.arguments('timeout', 'lastArgument')
     requestTimeout = requestTimeout ? requestTimeout : 1000
+    // const fail = parameters.arguments('fail ', 'lastArgument')
+    const fail = parameters.command.has('fail')
+    const failMsg = parameters.arguments('fail', 'lastArgument')
+
     require('./validators/apis')(apis)
 
     return new Promise(async (resolve, reject) => {
       let dataSent = {}
       if(extraData){
         dataSent.extraData = extraData
+      }
+      if(fail && failMsg){
+        dataSent.failMessage = failMsg
       }
       let weDontHaveAnyApis = !!apis
       let generatedResults = []
@@ -53,10 +60,15 @@ module.exports= dslFramework(
           }
           let weHaveBadResponses = !!badApiResponses.length
           if(weHaveBadResponses){
-            notOkStatus(isResifyResponse)(res, dataSent)
+              notOkStatus(isResifyResponse)(res, dataSent)
           }
           if(!weHaveBadResponses){
-            okStatus(isResifyResponse)(res, dataSent)
+            if(!fail){
+              okStatus(isResifyResponse)(res, dataSent)
+            }
+            if(fail){
+              notOkStatus(isResifyResponse)(res, dataSent)
+            }
           }
         }
         if(!allFine){
@@ -65,7 +77,12 @@ module.exports= dslFramework(
         }
       }
       if (!weDontHaveAnyApis) {
-        okStatus(isResifyResponse)(res, dataSent)
+        if(!fail){
+          okStatus(isResifyResponse)(res, dataSent)
+        }
+        if(fail){
+          notOkStatus(isResifyResponse)(res, dataSent)
+        }
       }
       resolve(generatedResults)
     })

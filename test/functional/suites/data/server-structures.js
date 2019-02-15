@@ -12,7 +12,7 @@ module.exports = {
       dc([createHandler(emptySuccessHandler(), 'one')], '001 successful', {goodBad: 'ok'})
     ],
     fail: [
-      dc([createHandler(emptyFailHander,'one')], '002 failed',
+      dc([createHandler(emptyFailHander(),'one')], '002 failed',
         {
           goodBad: 'bad'
         })
@@ -40,21 +40,21 @@ module.exports = {
 
         dc([
           createHandler(emptySuccessHandler(),'one'),
-          createHandler(emptyFailHander,'two')
+          createHandler(emptyFailHander(),'two')
         ], '005 failed', {goodBad: 'bad'}),
 
         dc([
           createHandler(emptySuccessHandler(),'one'),
-          createHandler(emptyFailHander,'two')
+          createHandler(emptyFailHander(),'two')
         ], '005.001 failed', {goodBad: 'bad'}),
 
         dc([
-          createHandler(emptyFailHander,'one'),
+          createHandler(emptyFailHander(),'one'),
           createHandler(emptySuccessHandler(),'two')
         ], '005.002 failed', {goodBad: 'bad'}),
 
         dc([
-          createHandler(emptyFailHander,'empty-response'),
+          createHandler(emptyFailHander(),'empty-response'),
           createHandler(emptySuccessHandler(),'two')
         ], '005.003 failed', {goodBad: 'bad'})
       ]
@@ -73,7 +73,7 @@ module.exports = {
       fail:[
 
         dc([
-            createHandler(emptyFailHander,'1'),
+            createHandler(emptyFailHander(),'1'),
             [
               createHandler(emptySuccessHandler(),'1.1')
             ]
@@ -82,7 +82,7 @@ module.exports = {
         dc( [
             createHandler(emptySuccessHandler(),'1'),
             [
-              createHandler(emptyFailHander,'1.1')
+              createHandler(emptyFailHander(),'1.1')
             ]
           ],
           '008 the second layer fails', {goodBad: 'bad'}),
@@ -91,13 +91,13 @@ module.exports = {
             [
               createHandler(emptySuccessHandler(),'1.1'),
               [
-                createHandler(emptyFailHander,'1.1')
+                createHandler(emptyFailHander(),'1.1')
               ]
             ]
           ],
           '009 third layer fails', {goodBad: 'bad'}),
         dc([
-          createHandler(emptyFailHander,'1'),
+          createHandler(emptyFailHander(),'1'),
             [
               [
                 createHandler(emptySuccessHandler(),'1.1')
@@ -112,7 +112,7 @@ module.exports = {
               [
                 createHandler(emptySuccessHandler(),'1.1.1'),
                 [
-                  createHandler(emptyFailHander,'1.1.1.1')
+                  createHandler(emptyFailHander(),'1.1.1.1')
                 ]
               ]
             ]
