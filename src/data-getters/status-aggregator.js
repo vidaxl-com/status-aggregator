@@ -3,8 +3,8 @@ const axios = require('axios')
 const op = require('object-path')
 
 module.exports = (apis, timeout) => new Promise(async (resolve, reject)=>{
-    let msg = ''
     const results = []
+    const errorResults = []
     const apisFlattened = aFlatten(apis)
     for (let i = 0; i < apisFlattened.length; i++) {
       try{
@@ -16,10 +16,22 @@ module.exports = (apis, timeout) => new Promise(async (resolve, reject)=>{
         }))
       }
       catch (e) {
-        msg += `Connecting to ${op.get(e, 'request._currentUrl')} was not successful \n`
+        errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
       }
     }
 
-    resolve({msg, results})
+    resolve({
+      results,
+      errorResults,
+      ok: function () {
+        return !this.errorResults.length
+      },
+      msg:function () {
+        return this.ok() ?
+          ''
+          :
+          this.errorResults.join('\n')
+      }
+    })
   })
 

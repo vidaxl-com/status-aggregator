@@ -29,39 +29,42 @@ const dslFramework = require('dsl-framework').noPromoises()
 module.exports= dslFramework(
   (e, parameters) => {
     const timeSpan = require('time-span');
-    const apis = parameters.arguments('addApi', 'allEntries')
+    const statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
     let extraData = parameters.arguments('addExtraData', 'allEntries')
     extraData = !!extraData ? flatten(extraData) : false
     const res = parameters.arguments('addResponse', 'lastArgument')
     const isResifyResponse = parameters.command.has('resifyResponse')
     let requestTimeout = parameters.arguments('timeout', 'lastArgument')
     requestTimeout = requestTimeout ? requestTimeout : 1000
-    // const fail = parameters.arguments('fail ', 'lastArgument')
     const fail = parameters.command.has('fail')
     const failMsg = parameters.arguments('fail', 'lastArgument')
 
-    require('./validators/apis')(apis)
-
     return new Promise(async (resolve, reject) => {
-      let status = !fail;
+      let status = !fail ;
       let dataSent = {}
+      if(status && failMsg){
+        dataSent.failMessage = failMsg ? failMsg : 'Failed by request.'
+      }
       if(extraData){
         dataSent.extraData = extraData
       }
-      if(fail && failMsg){
-        dataSent.failMessage = failMsg
-      }
-      let weDontHaveAnyApis = !!apis
       let generatedResults = []
-      if (weDontHaveAnyApis) {
-        const {results, msg}= await apiGetter(apis,requestTimeout).catch(e => l(e)())
+      if (statusAggregatorApis) {
+        const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis)
+        let msg = ''
+        const validUrls = urlValidationResults.ok()
+        msg.concat(validUrls ? '' : urlValidationResults.msg())
+        const apiGetterResults = await apiGetter(statusAggregatorApis,requestTimeout).catch(e => l(e)())
+        const validApiResponses = apiGetterResults.ok()
+        msg += (validApiResponses ? '' : apiGetterResults.msg())
+
         dataSent.msg = msg ? msg:undefined
-        generatedResults = results
+        generatedResults = apiGetterResults.results
         const somethingWentWrongDuringTheCommunitcation =
-          !!results.filter(item => item.status !== 200).length || !Object.keys(results).length
-        const badApiResponses = require('./validators/badApiResponses')(results)
+          !!generatedResults.filter(item => item.status !== 200).length || !Object.keys(generatedResults).length
+        const badApiResponses = require('./validators/badApiResponses')(generatedResults)
         const weHaveBadResponses = !!badApiResponses.length
-        status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && status
+        status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
       }
       statusReport(status)(isResifyResponse, timeSpan)(res, dataSent)
 
