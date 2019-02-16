@@ -15,16 +15,21 @@ const dslFramework = require('dsl-framework').noPromoises()
   }
 }
   , statusReport = (success = true) => (isRresifyResponse, timeSpan) =>
-      (res, data) =>
-        responseSenderAdapter(isRresifyResponse)
-        (res, Object.assign(
-          {
-            status:success?'ok':'bad',
-            timer:{
-              durationMs: timeSpan()(),
-              sent:new Date().toUTCString()
-            },
-            }, data))
+      async (res, data) =>
+        new Promise((resolve, reject) =>{
+          const resultingData = Object.assign(
+            {
+              status:success?'ok':'bad',
+              timer:{
+                durationMs: timeSpan()(),
+                sent:new Date().toUTCString()
+              },
+            }, data)
+          responseSenderAdapter(isRresifyResponse)
+          (res, resultingData)
+          resolve(resultingData)
+        })
+
 
 module.exports= dslFramework(
   (e, parameters) => {
@@ -40,7 +45,7 @@ module.exports= dslFramework(
     const failMsg = parameters.arguments('fail', 'lastArgument')
 
     return new Promise(async (resolve, reject) => {
-      let status = !fail ;
+      let status = !fail
       let dataSent = {}
       if(status && failMsg){
         dataSent.failMessage = failMsg ? failMsg : 'Failed by request.'
@@ -66,9 +71,9 @@ module.exports= dslFramework(
         const weHaveBadResponses = !!badApiResponses.length
         status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
       }
-      statusReport(status)(isResifyResponse, timeSpan)(res, dataSent)
-
-      resolve(generatedResults)
+      let resultingData = await statusReport(status)(isResifyResponse, timeSpan)(res, dataSent)
+      // l(resultingData,"FUUU")
+      resolve(resultingData)
     })
   }
 )

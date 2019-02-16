@@ -45,14 +45,37 @@ module.exports =   describe('Plain-server suite', ()=>{
     server.stop()
   })
 
-  it('extraData server', async ()=>{
+  it('User caused Fail', async ()=>{
     const server = await serverStarter
       .handler(emptySuccessHandler({fail:['I wanted to Fail It']}))
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.status).to.equal('bad')
+
+    //todo: test fail message
+    // l(data.data).die()
     // expect(data.data.extraData[0]).to.equal('yeah')
     // expect(data.data.extraData[1]).to.equal('no')
+    server.stop()
+  })
+
+  it('Testing promise data', async ()=>{
+
+    const statusGenerator = require('../../../../src/index')
+    let retpromiseData = false
+    let handler = (req, res) => {
+      statusGenerator.addResponse(res)()
+        .then(
+          data=>{
+            retpromiseData = data
+          })
+    }
+
+    const server = await serverStarter
+      .handler(handler)
+      .name('promise handler test server')()
+    const data = await axios.get(server.getStatusUrl())
+    expect(retpromiseData).to.deep.equal(data.data);
     server.stop()
   })
 
