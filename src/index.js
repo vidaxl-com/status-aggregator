@@ -13,7 +13,14 @@ const dslFramework = require('dsl-framework').noPromoises()
   , statusReport = (success = true) => (isRresifyResponse, timeSpan) =>
       (res, data) =>
         responseSenderAdapter(isRresifyResponse)
-        (res, Object.assign({status:success?'ok':'bad', duration: timeSpan()()}, data))
+        (res, Object.assign(
+          {
+            status:success?'ok':'bad',
+            timer:{
+              durationMs: timeSpan()(),
+              sent:new Date().toUTCString()
+            },
+            }, data))
 
 module.exports= dslFramework(
   (e, parameters) => {
