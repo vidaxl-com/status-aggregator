@@ -49,15 +49,8 @@ module.exports= dslFramework(
         const somethingWentWrongDuringTheCommunitcation =
           !!results.filter(item => item.status !== 200).length || !Object.keys(results).length
 
-        const allFine = !somethingWentWrongDuringTheCommunitcation
-        if(allFine){
-          let badApiResponses = []
-          for (let i = 0; i < results.length; i++) {
-            let actResult = results[i]
-            if(actResult.data.status === 'bad'){
-              badApiResponses.push(actResult)
-            }
-          }
+        if(!somethingWentWrongDuringTheCommunitcation){
+          let badApiResponses = require('./validators/badApiResponses')(results)
           let weHaveBadResponses = !!badApiResponses.length
           if(weHaveBadResponses){
               notOkStatus(isResifyResponse)(res, dataSent)
@@ -71,7 +64,7 @@ module.exports= dslFramework(
             }
           }
         }
-        if(!allFine){
+        if(somethingWentWrongDuringTheCommunitcation){
           dataSent.msg = msg
           notOkStatus(isResifyResponse)(res, dataSent)
         }
