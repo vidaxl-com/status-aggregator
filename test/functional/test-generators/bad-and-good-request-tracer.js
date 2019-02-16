@@ -8,7 +8,7 @@ module.exports = (name, serviceHandlers, assertData) =>
     let servers = await require('./more-flat-server-starter')(serverStarter, statusGenerator, serviceHandlers)
     const data = await axios.get(servers.serverN.getStatusUrl())
     if(!!assertData){
-      expect(data.data.status).to.equal(assertData)
+      expect(l(data.data).return().status).to.equal(assertData)
     }
     servers.stop()
   })

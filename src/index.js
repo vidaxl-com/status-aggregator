@@ -1,8 +1,7 @@
 const dslFramework = require('dsl-framework').noPromoises()
-const apiGetter = require('./data-getters/status-aggregator')
-const flatten = require('array-flatten')
-
-const responseSenderAdapter = (isRresifyResponse) => {
+  , apiGetter = require('./data-getters/status-aggregator')
+  , flatten = require('array-flatten')
+  , responseSenderAdapter = (isRresifyResponse) => {
 
   if(isRresifyResponse){
     return (res, data) => res.json(200, data);
@@ -11,14 +10,14 @@ const responseSenderAdapter = (isRresifyResponse) => {
     return (res, data) => res.status(200).json(data)
   }
 }
-  , okStatus = (isRresifyResponse) =>
-  (res, data) => responseSenderAdapter(isRresifyResponse)(res, Object.assign({status:'ok'}, data))
-  , notOkStatus = (isRresifyResponse) =>
-  (res, data) => responseSenderAdapter(isRresifyResponse)
-    (res, Object.assign({status:'bad'}, data))
+  , statusReport = (success = true) => (isRresifyResponse, timeSpan) =>
+      (res, data) =>
+        responseSenderAdapter(isRresifyResponse)
+        (res, Object.assign({status:success?'ok':'bad', duration: timeSpan()()}, data))
 
 module.exports= dslFramework(
   (e, parameters) => {
+    const timeSpan = require('time-span');
     const apis = parameters.arguments('addApi', 'allEntries')
     let extraData = parameters.arguments('addExtraData', 'allEntries')
     extraData = !!extraData ? flatten(extraData) : false
@@ -45,7 +44,6 @@ module.exports= dslFramework(
       if (weDontHaveAnyApis) {
         const {results, msg}= await apiGetter(apis,requestTimeout).catch(e => l(e)())
         generatedResults = results
-        // l(Object.keys(results).length)()
         const somethingWentWrongDuringTheCommunitcation =
           !!results.filter(item => item.status !== 200).length || !Object.keys(results).length
 
@@ -53,33 +51,22 @@ module.exports= dslFramework(
           let badApiResponses = require('./validators/badApiResponses')(results)
           let weHaveBadResponses = !!badApiResponses.length
           if(weHaveBadResponses){
-              notOkStatus(isResifyResponse)(res, dataSent)
+            // notOkStatus(isResifyResponse)(res, dataSent)
+            statusReport(false)(isResifyResponse, timeSpan)(res, dataSent)
           }
           if(!weHaveBadResponses){
-            if(!fail){
-              okStatus(isResifyResponse)(res, dataSent)
-            }
-            if(fail){
-              notOkStatus(isResifyResponse)(res, dataSent)
-            }
+              statusReport(!fail)(isResifyResponse, timeSpan)(res, dataSent)
           }
         }
         if(somethingWentWrongDuringTheCommunitcation){
           dataSent.msg = msg
-          notOkStatus(isResifyResponse)(res, dataSent)
+          statusReport(false)(isResifyResponse, timeSpan)(res, dataSent)
         }
       }
       if (!weDontHaveAnyApis) {
-        if(!fail){
-          okStatus(isResifyResponse)(res, dataSent)
-        }
-        if(fail){
-          notOkStatus(isResifyResponse)(res, dataSent)
-        }
+        statusReport(!fail)(isResifyResponse, timeSpan)(res, dataSent)
       }
       resolve(generatedResults)
     })
   }
 )
-
-
