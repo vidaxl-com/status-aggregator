@@ -4,10 +4,14 @@ const dslFramework = require('dsl-framework').noPromoises()
   , responseSenderAdapter = (isRresifyResponse) => {
 
   if(isRresifyResponse){
-    return (res, data) => res.json(200, data);
+    return (res, data) => {
+      res.json(200, data);
+    }
   }
   if(!isRresifyResponse){
-    return (res, data) => res.status(200).json(data)
+    return (res, data) => {
+      res.status(200).json(data)
+    }
   }
 }
   , statusReport = (success = true) => (isRresifyResponse, timeSpan) =>
@@ -39,6 +43,7 @@ module.exports= dslFramework(
     require('./validators/apis')(apis)
 
     return new Promise(async (resolve, reject) => {
+      let status = !fail;
       let dataSent = {}
       if(extraData){
         dataSent.extraData = extraData
@@ -50,29 +55,16 @@ module.exports= dslFramework(
       let generatedResults = []
       if (weDontHaveAnyApis) {
         const {results, msg}= await apiGetter(apis,requestTimeout).catch(e => l(e)())
+        dataSent.msg = msg ? msg:undefined
         generatedResults = results
         const somethingWentWrongDuringTheCommunitcation =
           !!results.filter(item => item.status !== 200).length || !Object.keys(results).length
+        const badApiResponses = require('./validators/badApiResponses')(results)
+        const weHaveBadResponses = !!badApiResponses.length
+        status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && status
+      }
+      statusReport(status)(isResifyResponse, timeSpan)(res, dataSent)
 
-        if(!somethingWentWrongDuringTheCommunitcation){
-          let badApiResponses = require('./validators/badApiResponses')(results)
-          let weHaveBadResponses = !!badApiResponses.length
-          if(weHaveBadResponses){
-            // notOkStatus(isResifyResponse)(res, dataSent)
-            statusReport(false)(isResifyResponse, timeSpan)(res, dataSent)
-          }
-          if(!weHaveBadResponses){
-              statusReport(!fail)(isResifyResponse, timeSpan)(res, dataSent)
-          }
-        }
-        if(somethingWentWrongDuringTheCommunitcation){
-          dataSent.msg = msg
-          statusReport(false)(isResifyResponse, timeSpan)(res, dataSent)
-        }
-      }
-      if (!weDontHaveAnyApis) {
-        statusReport(!fail)(isResifyResponse, timeSpan)(res, dataSent)
-      }
       resolve(generatedResults)
     })
   }
