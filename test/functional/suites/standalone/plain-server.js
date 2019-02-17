@@ -59,24 +59,43 @@ module.exports =   describe('Plain-server suite', ()=>{
     server.stop()
   })
 
-  it('Testing promise data', async ()=>{
+  describe('Testing promiseData', function () {
+    it('With response object defined', async ()=>{
 
-    const statusGenerator = require('../../../../src/index')
-    let retpromiseData = false
-    let handler = (req, res) => {
-      statusGenerator.addResponse(res)()
-        .then(
-          data=>{
-            retpromiseData = data
-          })
-    }
+      const statusGenerator = require('../../../../src/index')
+      let retpromiseData = false
+      let handler = (req, res) => {
+        statusGenerator.addResponse(res)()
+          .then(
+            data=>{
+              retpromiseData = data
+            })
+      }
 
-    const server = await serverStarter
-      .handler(handler)
-      .name('promise handler test server')()
-    const data = await axios.get(server.getStatusUrl())
-    expect(retpromiseData).to.deep.equal(data.data);
-    server.stop()
+      const server = await serverStarter
+        .handler(handler)
+        .name('promise handler test server')()
+      const data = await axios.get(server.getStatusUrl())
+      expect(retpromiseData).to.deep.equal(data.data);
+      server.stop()
+    })
+    it('Without response object defined', async ()=>{
+
+      const statusGenerator = require('../../../../src/index')
+      let handler = async (req, res) => {
+        statusGenerator()
+          .then(
+            data=>{
+              res.status(200).json({whatever:'you want', data})
+            })
+
+      }
+      const server = await serverStarter
+        .handler(handler)
+        .name('promise handler test server')()
+      let returnData = await axios.get(server.getStatusUrl())
+      expect(Object.keys(returnData.data)).to.include('data').and.to.include('whatever')
+      server.stop()
+    })
   })
-
 })

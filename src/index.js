@@ -1,17 +1,15 @@
 const dslFramework = require('dsl-framework').noPromoises()
   , apiGetter = require('./data-getters/status-aggregator')
   , flatten = require('array-flatten')
-  , responseSenderAdapter = (isRresifyResponse) => {
-
-  if(isRresifyResponse){
+  , responseSenderAdapter = () => {
     return (res, data) => {
-      res.json(200, data);
-    }
-  }
-  if(!isRresifyResponse){
-    return (res, data) => {
-      res.status(200).json(data)
-    }
+      const newStyleResponse = !!res.status
+      if(!newStyleResponse) {
+        res.json(200, data);
+      }
+      if(newStyleResponse){
+        res.status(200).json(data)
+      }
   }
 }
   , dataPatcher = (data, success = true, timeSpan) => {
@@ -26,11 +24,9 @@ const dslFramework = require('dsl-framework').noPromoises()
 
   return resultingData
 }
-  , sendStatusReport = (isRresifyResponse, timeSpan) =>
-      async (res, resultingData) =>
+  , sendStatusReport = async (res, resultingData) =>
         new Promise((resolve, reject) =>{
-
-          responseSenderAdapter(isRresifyResponse)
+          responseSenderAdapter()
           (res, resultingData)
           resolve(resultingData)
         })
@@ -43,7 +39,6 @@ module.exports= dslFramework(
     let extraData = parameters.arguments('addExtraData', 'allEntries')
     extraData = !!extraData ? flatten(extraData) : false
     const res = parameters.arguments('addResponse', 'lastArgument')
-    const isResifyResponse = parameters.command.has('resifyResponse')
     let requestTimeout = parameters.arguments('timeout', 'lastArgument')
     requestTimeout = requestTimeout ? requestTimeout : 1000
     const fail = parameters.command.has('fail')
@@ -78,7 +73,9 @@ module.exports= dslFramework(
       }
       const resultingData = dataPatcher(dataSent, status, timeSpan)
       resolve(resultingData)
-      sendStatusReport(isResifyResponse)(res, resultingData)
+      if(res){
+        sendStatusReport(res, resultingData)
+      }
     })
   }
 )
