@@ -14,17 +14,22 @@ const dslFramework = require('dsl-framework').noPromoises()
     }
   }
 }
-  , statusReport = (success = true) => (isRresifyResponse, timeSpan) =>
-      async (res, data) =>
+  , dataPatcher = (data, success = true, timeSpan) => {
+  const resultingData = Object.assign(
+    {
+      status:success?'ok':'bad',
+      timer:{
+        durationMs: timeSpan()(),
+        sent:new Date().toUTCString()
+      },
+    }, data)
+
+  return resultingData
+}
+  , sendStatusReport = (isRresifyResponse, timeSpan) =>
+      async (res, resultingData) =>
         new Promise((resolve, reject) =>{
-          const resultingData = Object.assign(
-            {
-              status:success?'ok':'bad',
-              timer:{
-                durationMs: timeSpan()(),
-                sent:new Date().toUTCString()
-              },
-            }, data)
+
           responseSenderAdapter(isRresifyResponse)
           (res, resultingData)
           resolve(resultingData)
@@ -71,9 +76,9 @@ module.exports= dslFramework(
         const weHaveBadResponses = !!badApiResponses.length
         status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
       }
-      let resultingData = await statusReport(status)(isResifyResponse, timeSpan)(res, dataSent)
-      // l(resultingData,"FUUU")
+      const resultingData = dataPatcher(dataSent, status, timeSpan)
       resolve(resultingData)
+      sendStatusReport(isResifyResponse)(res, resultingData)
     })
   }
 )
