@@ -1,4 +1,4 @@
-  const apiGetter = require('./data-getters/status-aggregator')
+  const apiGetter = require('../data-getters/status-aggregator')
   , flatten = require('array-flatten')
 
   , dataPatcher = (data, success = true, timeSpan) => {

@@ -1,5 +1,4 @@
 const dslFramework = require('dsl-framework').noPromoises()
-  , flatten = require('array-flatten')
   , responseSenderAdapter = () => {
     return (res, data) => {
       const newStyleResponse = !!res.status
@@ -25,7 +24,7 @@ module.exports= dslFramework(
     const res = parameters.arguments('addResponse', 'lastArgument')
 
     return new Promise(async (resolve, reject) => {
-      let statusAggregatorResults = await require('./status-aggregator-processor')(parameters)
+      let statusAggregatorResults = await require('./pocessors/status-aggregator-processor')(parameters)
       resolve(statusAggregatorResults)
       if(res){
         sendStatusReport(res, statusAggregatorResults)
