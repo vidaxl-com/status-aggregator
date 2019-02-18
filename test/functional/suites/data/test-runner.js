@@ -8,5 +8,5 @@ module.exports = (dataset, asertPath) => {
       dataset[testKind].forEach(testData =>
         tr(testData.description,
           testData.structure,
-          op.get(testData, asertPath))))
+          op.get(testData, `statusAggregatorResults.${asertPath}`))))
 }

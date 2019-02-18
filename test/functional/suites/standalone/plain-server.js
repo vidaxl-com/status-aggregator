@@ -12,14 +12,14 @@ module.exports =   describe('Plain-server suite', ()=>{
   it('successful request', async ()=>{
     const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
     const data = await axios.get(server.getStatusUrl())
-    expect(data.data.status).to.equal('ok')
+    expect(data.data.statusAggregatorResults.status).to.equal('ok')
     server.stop()
   })
 
   it('failed request', async ()=>{
     const server = await serverStarter.handler(emptyfailureHandler()).name('fail')()
     const data = await axios.get(server.getStatusUrl())
-    expect(data.data.status).to.equal('bad')
+    expect(data.data.statusAggregatorResults.status).to.equal('bad')
     server.stop()
   })
 
@@ -27,11 +27,11 @@ module.exports =   describe('Plain-server suite', ()=>{
     const server = await serverStarter
       .handler(nonExistingfailureHandler(2)).name('dependency does not exists')()
     const data = await axios.get(server.getStatusUrl())
-    expect(data.data.status).to.equal('bad')
-    expect(!!data.data.msg).to.equal(true)
-    expect(data.data.msg.includes(' was not successful')).to.equal(true)
-    expect(data.data.msg.includes('Connecting to http://localhost:')).to.equal(true)
-    assert(extractNumbers(data.data.msg).length === 2)
+    expect(data.data.statusAggregatorResults.status).to.equal('bad')
+    expect(!!data.data.statusAggregatorResults.msg).to.equal(true)
+    expect(data.data.statusAggregatorResults.msg.includes(' was not successful')).to.equal(true)
+    expect(data.data.statusAggregatorResults.msg.includes('Connecting to http://localhost:')).to.equal(true)
+    assert(extractNumbers(data.data.statusAggregatorResults.msg).length === 2)
     server.stop()
   })
 
@@ -40,8 +40,8 @@ module.exports =   describe('Plain-server suite', ()=>{
       .handler(emptySuccessHandler({addExtraData:['yeah','no']}))
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
-    expect(data.data.extraData[0]).to.equal('yeah')
-    expect(data.data.extraData[1]).to.equal('no')
+    expect(data.data.statusAggregatorResults.extraData[0]).to.equal('yeah')
+    expect(data.data.statusAggregatorResults.extraData[1]).to.equal('no')
     server.stop()
   })
 
@@ -50,7 +50,7 @@ module.exports =   describe('Plain-server suite', ()=>{
       .handler(emptySuccessHandler({fail:['I wanted to Fail It']}))
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
-    expect(data.data.status).to.equal('bad')
+    expect(data.data.statusAggregatorResults.status).to.equal('bad')
 
     //todo: test fail message
     // l(data.data).die()

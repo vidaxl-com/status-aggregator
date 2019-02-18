@@ -24,10 +24,11 @@ module.exports= dslFramework(
     const res = parameters.arguments('addResponse', 'lastArgument')
 
     return new Promise(async (resolve, reject) => {
-      let statusAggregatorResults = await require('./pocessors/status-aggregator-processor')(parameters)
-      resolve(statusAggregatorResults)
+      let statusAggregatorResults = await require('./pocessors/status-aggregator')(parameters)
+      const resolveData = {statusAggregatorResults}
+      resolve(resolveData)
       if(res){
-        sendStatusReport(res, statusAggregatorResults)
+        sendStatusReport(res, resolveData)
       }
     })
   }
