@@ -32,8 +32,7 @@ module.exports= (parameters) => {
         const validUrls = urlValidationResults.ok()
         msg.concat(validUrls ? '' : urlValidationResults.msg())
         const apiGetterResults = await apiGetter(statusAggregatorApis,requestTimeout)
-        l(apiGetterResults.results)()
-        // dataSent.details = apiGetterResults.results
+
         const validApiResponses = apiGetterResults.ok()
         msg += (validApiResponses ? '' : apiGetterResults.msg())
 
@@ -49,6 +48,8 @@ module.exports= (parameters) => {
         status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
       }
       const d = dataPatcher(dataSent, status, timeSpan)
+
+      d.generatedResults = generatedResults;
       resolve(d)
     })
   }

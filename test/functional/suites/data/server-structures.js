@@ -64,11 +64,28 @@ module.exports = {
       success:[
         dc([
           createHandler(emptySuccessHandler(),'1'),
+          [
+            createHandler(emptySuccessHandler(),'1.1'),
+            createHandler(emptySuccessHandler(),'1.2')
+          ]
+        ], '006 none of them fails', {goodBad: 'ok'}),
+        dc([
+          createHandler(emptySuccessHandler(),'1'),
+          [
             [
-              createHandler(emptySuccessHandler(),'1.1'),
-              createHandler(emptySuccessHandler(),'1.2')
-            ]
-          ], '006 none of them fails', {goodBad: 'ok'}),
+              [
+                createHandler(emptySuccessHandler(),'1.1'),
+                createHandler(emptySuccessHandler(),'1.2')
+              ]
+            ],
+            createHandler(emptySuccessHandler(),'1.1'),
+            createHandler(emptySuccessHandler(),'1.2')
+          ]
+        ], '006.001 none of them fails',
+          {
+            goodBad: 'ok',
+            resultTester:''
+          }),
       ] ,
       fail:[
 

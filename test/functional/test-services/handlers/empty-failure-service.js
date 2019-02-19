@@ -1,3 +1,3 @@
-module.exports = (extraParameters = {}) =>
+module.exports = () =>
   require('./empty-success-service')
-  (Object.assign({fail:['oh yeah ,I wanted to fail']},extraParameters))
+    .extraParameters({fail:['oh yeah ,I wanted to fail']})()

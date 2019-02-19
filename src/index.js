@@ -21,7 +21,7 @@ module.exports= dslFramework(
       if(extraData){
         resolveData.extraData = extraData
       }
-
+      // console.log(require('treeify').asTree(resolveData),true)
       resolve(resolveData)
       if(res){
         sendStatusReport(res, resolveData)
