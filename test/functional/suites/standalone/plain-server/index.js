@@ -40,8 +40,8 @@ module.exports =   describe('Plain-server suite', ()=>{
       .handler(emptySuccessHandler({addExtraData:['yeah','no']}))
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
-    expect(data.data.statusAggregatorResults.extraData[0]).to.equal('yeah')
-    expect(data.data.statusAggregatorResults.extraData[1]).to.equal('no')
+    expect(data.data.extraData[0]).to.equal('yeah')
+    expect(data.data.extraData[1]).to.equal('no')
     server.stop()
   })
 
