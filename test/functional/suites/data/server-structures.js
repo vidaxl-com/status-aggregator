@@ -87,7 +87,7 @@ module.exports = {
         ], '006.001 none of them fails',
           {
             goodBad: 'ok',
-            resultTester:''
+            outputDatastructure:''
           }),
       ] ,
       fail:[

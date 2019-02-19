@@ -4,11 +4,10 @@ const op = require('object-path')
   , flatten = require('flat')
 
 
-module.exports= (name, serverStructures, assertPath) => {
+module.exports= (name, serverStructures, assertPath, tr) => {
   const testPaths = testPathGetter(serverStructures)
 
   describe(name, ()=>{
-    const retData = {}
     testPaths.forEach(testPath => {
       const test = op.get(serverStructures, `${testPath}`)
       const testFlat = flatten(test)
@@ -16,11 +15,7 @@ module.exports= (name, serverStructures, assertPath) => {
       return describe(test['description'], ()=>{
         const asserts = Object.keys(testFlat).filter(path=>
           path.includes(`assertData.${assertPath}`))
-        // if(asserts.length){
-        //   retData
-        // }
-
-        testRunner(test, assertPath, asserts)
+        testRunner(test, assertPath, asserts, tr)
       })
     })
   })
