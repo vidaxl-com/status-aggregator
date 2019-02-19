@@ -15,9 +15,7 @@
 module.exports= (parameters) => {
     const timeSpan = require('time-span');
     const statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
-
-    let requestTimeout = parameters.arguments('timeout', 'lastArgument')
-    requestTimeout = requestTimeout ? requestTimeout : 1000
+    const requestTimeout = parameters.arguments('timeout', 'lastArgument', 1000)
     const fail = parameters.command.has('fail')
     const failMsg = parameters.arguments('fail', 'lastArgument')
 
