@@ -6,7 +6,7 @@
   "scripts": {
     "package-audit": "node_modules/.bin/check-audit",
     "depcheck": "node_modules/.bin/depcheck --ignores \"husky,depcheck,assert\"",
-    "test": "node_modules/.bin/mocha --recursive test/*-spec.js",
+    "test": "node_modules/.bin/mocha test/*-spec.js",
     "test-all": "npm run package-audit && npm run depcheck && npm test"
   },
   "author": "Imre Toth",

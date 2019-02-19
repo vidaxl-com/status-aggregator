@@ -1,10 +1,9 @@
 require('cowlog')()
   const serverStructures = require('./suites/data/server-structures')
-  , suiteRunner = require('./suites/data/suiter-runner')
-  , tr = require('./test-runners/bad-and-good-request-tracer')
+  , suiteRunner = require('./suites/data/suite-runner')
 
 describe('Functional Tests', ()=>{
   require('./suites/standalone/plain-server')
-  suiteRunner('Good/Bad request evaluation suite', serverStructures, 'goodBad', tr)
+  suiteRunner('Good/Bad request evaluation suite', serverStructures, 'goodBad')
 })
 
