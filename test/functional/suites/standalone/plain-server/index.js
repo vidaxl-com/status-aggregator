@@ -1,9 +1,9 @@
 const axios = require('axios')
   , {expect} = require('chai')
-  , serverStarter = require('../../test-services/serverStarter')
-  , emptySuccessHandler = require('../../test-services/handlers/empty-success-service')
-  , emptyfailureHandler = require('../../test-services/handlers/empty-failure-service')
-  , nonExistingfailureHandler = require('../../test-services/handlers/non-existing-failure-service')
+  , serverStarter = require('../../../test-services/serverStarter')
+  , emptySuccessHandler = require('../../../test-services/handlers/empty-success-service')
+  , emptyfailureHandler = require('../../../test-services/handlers/empty-failure-service')
+  , nonExistingfailureHandler = require('../../../test-services/handlers/non-existing-failure-service')
   , assert = require('assert')
   , extractNumbers = require('extract-numbers')
 
@@ -59,10 +59,25 @@ module.exports =   describe('Plain-server suite', ()=>{
     server.stop()
   })
 
+  it('Tests name prarameter', async ()=> {
+    const statusGenerator = require('../../../../../src/index')
+    let handler = (req, res) => {
+      statusGenerator.addResponse(res).name('my-awesome-server')()
+    }
+
+    const server = await serverStarter
+      .handler(handler)
+      .name('name parameter test')()
+
+    const data = await axios.get(server.getStatusUrl())
+    expect(data.data.name).to.equal('my-awesome-server');
+    server.stop()
+  })
+
   describe('Testing promiseData', function () {
     it('With response object defined', async ()=>{
 
-      const statusGenerator = require('../../../../src/index')
+      const statusGenerator = require('../../../../../src/index')
       let retpromiseData = false
       let handler = (req, res) => {
         statusGenerator.addResponse(res)()
@@ -81,7 +96,7 @@ module.exports =   describe('Plain-server suite', ()=>{
     })
     it('Without response object defined', async ()=>{
 
-      const statusGenerator = require('../../../../src/index')
+      const statusGenerator = require('../../../../../src/index')
       let handler = async (req, res) => {
         statusGenerator()
           .then(
