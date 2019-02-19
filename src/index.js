@@ -16,7 +16,8 @@ module.exports= dslFramework(
     let name = parameters.arguments('name', 'lastArgument',"undefined name")
     return new Promise(async (resolve, reject) => {
       let statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
-      const resolveData = {statusAggregatorResults, name}
+      let status = statusAggregatorResults.status === 'ok' ? 'ok' : 'bad'
+      const resolveData = {statusAggregatorResults, name, status}
       if(extraData){
         resolveData.extraData = extraData
       }

@@ -13,6 +13,7 @@ module.exports =   describe('Plain-server suite', ()=>{
     const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('ok')
+    expect(data.data.status).to.equal('ok')
     server.stop()
   })
 
@@ -20,6 +21,7 @@ module.exports =   describe('Plain-server suite', ()=>{
     const server = await serverStarter.handler(emptyfailureHandler()).name('fail')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('bad')
+    expect(data.data.status).to.equal('bad')
     server.stop()
   })
 
