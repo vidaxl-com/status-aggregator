@@ -9,7 +9,10 @@ module.exports = {
   oneserver:{
     description: 'simple one-server tests',
     success: [
-      dc([createHandler(emptySuccessHandler(), 'one')], '001 successful', {goodBad: 'ok'})
+      dc([createHandler(emptySuccessHandler(), 'one')], '001 successful',
+        {
+          goodBad: 'ok'
+        })
     ],
     fail: [
       dc([createHandler(emptyFailHander(),'one')], '002 failed',

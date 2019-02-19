@@ -42,13 +42,11 @@ module.exports= (parameters) => {
         //todo: check this validation
         const somethingWentWrongDuringTheCommunitcation =
           !!generatedResults.filter(item => item.httpStatus !== 200).length || !Object.keys(generatedResults).length
-
         const badApiResponses = require('./validators/badApiResponses')(generatedResults)
         const weHaveBadResponses = !!badApiResponses.length
         status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
       }
       const d = dataPatcher(dataSent, status, timeSpan)
-
       d.generatedResults = generatedResults;
       resolve(d)
     })
