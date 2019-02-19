@@ -31,14 +31,19 @@ module.exports= (parameters) => {
         let msg = ''
         const validUrls = urlValidationResults.ok()
         msg.concat(validUrls ? '' : urlValidationResults.msg())
-        const apiGetterResults = await apiGetter(statusAggregatorApis,requestTimeout).catch(e => l(e)())
+        const apiGetterResults = await apiGetter(statusAggregatorApis,requestTimeout)
+        l(apiGetterResults.results)()
+        // dataSent.details = apiGetterResults.results
         const validApiResponses = apiGetterResults.ok()
         msg += (validApiResponses ? '' : apiGetterResults.msg())
 
         dataSent.msg = msg ? msg:undefined
         generatedResults = apiGetterResults.results
+
+        //todo: check this validation
         const somethingWentWrongDuringTheCommunitcation =
-          !!generatedResults.filter(item => item.status !== 200).length || !Object.keys(generatedResults).length
+          !!generatedResults.filter(item => item.httpStatus !== 200).length || !Object.keys(generatedResults).length
+
         const badApiResponses = require('./validators/badApiResponses')(generatedResults)
         const weHaveBadResponses = !!badApiResponses.length
         status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status

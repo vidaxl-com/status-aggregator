@@ -8,12 +8,14 @@ module.exports = (apis, timeout) => new Promise(async (resolve, reject)=>{
     const apisFlattened = aFlatten(apis)
     for (let i = 0; i < apisFlattened.length; i++) {
       try{
-        results.push(await axios.get(apisFlattened[i],{
+        const apiResult = await axios.get(apisFlattened[i],{
           validateStatus: function (status) {
             return status >= 200 && status < 600; // default
           },
           timeout: timeout
-        }))
+        })
+        // l(apiResult.data)()
+        results.push({data: apiResult.data, httpStatus: apiResult.status})
       }
       catch (e) {
         errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
