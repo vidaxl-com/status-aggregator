@@ -1,12 +1,11 @@
-module.exports = {
+module.exports = (oldStyleRequest) => ({
   responseSend: (res, data) => {
-    const newStyleResponse = !!res.status
-    if(!newStyleResponse) {
+    if(oldStyleRequest) {
       res.json(200, data);
     }
-    if(newStyleResponse){
+    if(!oldStyleRequest){
       res.status(200).json(data)
     }
   }
-}
+})
 

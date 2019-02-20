@@ -40,7 +40,7 @@ module.exports= (parameters) => {
         if(looseUrlCheck){
           statusAggregatorApis = statusAggregatorApis.map(row=>[require('addhttp')(row[0])])
         }
-        const apiGetterResults = await apiGetter(statusAggregatorApis,requestTimeout)
+        const apiGetterResults = await apiGetter(statusAggregatorApis, requestTimeout)
         const validApiResponses = apiGetterResults.ok()
         msg += (validApiResponses ? '' : apiGetterResults.msg())
         dataSent.msg = msg ? msg:undefined
