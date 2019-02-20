@@ -13,11 +13,14 @@
 }
 
 module.exports= (parameters) => {
-    const timeSpan = require('time-span');
-    const statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
-    const requestTimeout = parameters.arguments('timeout', 'lastArgument', 1000)
-    const fail = parameters.command.has('fail')
-    const failMsg = parameters.arguments('fail', 'lastArgument')
+    const timeSpan = require('time-span')
+    // , statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
+    , requestTimeout = parameters.arguments('timeout', 'lastArgument', 1000)
+    , fail = parameters.command.has('fail')
+    , failMsg = parameters.arguments('fail', 'lastArgument')
+    , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
+    let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
+
 
     return new Promise(async (resolve, reject) => {
       let status = !fail
@@ -27,18 +30,21 @@ module.exports= (parameters) => {
       }
       let generatedResults = []
       if (statusAggregatorApis) {
-        const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis)
         let msg = ''
-        const validUrls = urlValidationResults.ok()
-        msg.concat(validUrls ? '' : urlValidationResults.msg())
+        let validUrls = true
+        if(!looseUrlCheck){
+          const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis)
+          validUrls = urlValidationResults.ok()
+          msg.concat(validUrls ? '' : urlValidationResults.msg())
+        }
+        if(looseUrlCheck){
+          statusAggregatorApis = statusAggregatorApis.map(row=>[require('addhttp')(row[0])])
+        }
         const apiGetterResults = await apiGetter(statusAggregatorApis,requestTimeout)
-
         const validApiResponses = apiGetterResults.ok()
         msg += (validApiResponses ? '' : apiGetterResults.msg())
-
         dataSent.msg = msg ? msg:undefined
         generatedResults = apiGetterResults.results
-
         //todo: check this validation
         const somethingWentWrongDuringTheCommunitcation =
           !!generatedResults.filter(item => item.httpStatus !== 200).length || !Object.keys(generatedResults).length

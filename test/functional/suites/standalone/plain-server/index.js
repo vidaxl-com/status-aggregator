@@ -6,8 +6,9 @@ const axios = require('axios')
   , nonExistingfailureHandler = require('../../../test-services/handlers/non-existing-failure-service')
   , assert = require('assert')
   , extractNumbers = require('extract-numbers')
+  , statusGenerator = require('../../../../../src/index')
 
-module.exports =   describe('Plain-server suite', ()=>{
+module.exports =  describe('Plain-server suite', ()=>{
 
   it('successful request', async ()=>{
     const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
@@ -62,7 +63,6 @@ module.exports =   describe('Plain-server suite', ()=>{
   })
 
   it('Tests name prarameter', async ()=> {
-    const statusGenerator = require('../../../../../src/index')
     let handler = (req, res) => {
       statusGenerator.addResponse(res).name('my-awesome-server')()
     }
@@ -78,8 +78,6 @@ module.exports =   describe('Plain-server suite', ()=>{
 
   describe('Testing promiseData', function () {
     it('With response object defined', async ()=>{
-
-      const statusGenerator = require('../../../../../src/index')
       let retpromiseData = false
       let handler = (req, res) => {
         statusGenerator.addResponse(res)()
@@ -98,7 +96,6 @@ module.exports =   describe('Plain-server suite', ()=>{
     })
     it('Without response object defined', async ()=>{
 
-      const statusGenerator = require('../../../../../src/index')
       let handler = async (req, res) => {
         statusGenerator()
           .then(
@@ -113,6 +110,68 @@ module.exports =   describe('Plain-server suite', ()=>{
       let returnData = await axios.get(server.getStatusUrl())
       expect(Object.keys(returnData.data)).to.include('data').and.to.include('whatever')
       server.stop()
+    })
+  })
+
+  describe('Testing Url valiation', function () {
+    const removeProtocoll = url => url.replace(/(^\w+:|^)\/\//, '');
+    //starting with http:// or https://
+    it('good formatted urls', async () => {
+      const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
+      const data = await axios.get(server.getStatusUrl())
+      expect(data.data.statusAggregatorResults.status).to.equal('ok')
+      expect(data.data.status).to.equal('ok')
+      server.stop()
+    })
+
+    describe('bad formatted urls', function () {
+      it('default behaviour (fails)', async () => {
+        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server = await serverStarter.handler((req,res)=>{
+          const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
+          statusGenerator.addResponse(res).addApi(statusWithoutProtocoll)()
+        }).name('fail by non http url')()
+        const data = await axios.get(server.getStatusUrl())
+        expect(data.data.status).to.equal('bad')
+        server0.stop()
+        server.stop()
+      })
+
+      it('default behaviour (fail)', async () => {
+        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server = await serverStarter.handler((req,res)=>{
+          const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
+          statusGenerator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
+        }).name('fail by non http url')()
+        const data = await axios.get(server.getStatusUrl())
+        expect(data.data.status).to.equal('ok')
+        server0.stop()
+        server.stop()
+      })
+
+      it('default behaviour (success) .looseApiUrlCheck()', async () => {
+        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server = await serverStarter.handler((req,res)=>{
+          const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
+          statusGenerator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
+        }).name('success by non http url')()
+        const data = await axios.get(server.getStatusUrl())
+        expect(data.data.status).to.equal('ok')
+        server0.stop()
+        server.stop()
+      })
+
+      it('success by http url (success) .looseApiUrlCheck()', async () => {
+        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server = await serverStarter.handler((req,res)=>{
+          statusGenerator.addResponse(res).addApi(server0.getStatusUrl()).looseApiUrlCheck()
+        }).name('success by non http url')()
+        const data = await axios.get(server.getStatusUrl())
+        expect(data.data.status).to.equal('ok')
+        server0.stop()
+        server.stop()
+      })
+
     })
   })
 })

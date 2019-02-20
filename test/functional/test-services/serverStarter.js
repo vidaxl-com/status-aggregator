@@ -48,8 +48,10 @@ module.exports = dslFramework(
       returnObject['host'] = host
       returnObject['port'] = port
       returnObject['statusUrlPeice'] = statusUrlPeice
-      returnObject['getBaseUrl'] = function(){ return 'http://' + this.host + ':' + this.port }
+      returnObject['getBaseUrlWithoutProtocoll'] = function(){ return this.host + ':' + this.port }
+      returnObject['getBaseUrl'] = function(){ return this.protocoll + this.getBaseUrlWithoutProtocoll() }
       returnObject['getStatusUrl'] = function(){ return `${this.getBaseUrl()}${this.statusUrlPeice}`  }
+      returnObject['protocoll'] = 'http://'
       returnObject['serverIdentifier'] = function(){ return `server "${returnObject.name}"; port: ${returnObject.port};`}
       returnObject['stop'] = function () {
         serverShutdownLog(`${returnObject.serverIdentifier()} stopped.`)
