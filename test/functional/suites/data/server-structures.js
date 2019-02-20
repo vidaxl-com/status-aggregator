@@ -35,8 +35,8 @@ module.exports = {
             goodBad: 'ok',
             objectPath: [
               {path: 'statusAggregatorResults.status', value: 'ok'},
-              {path: 'statusAggregatorResults.generatedResults.data[0].statusAggregatorResultsstatus', value: 'ok'},
-              {path: 'statusAggregatorResults.generatedResults.data[1].statusAggregatorResultsstatus', value: 'ok'},
+              {path: 'statusAggregatorResults.generatedResults.0.data.statusAggregatorResults.status', value: 'ok'},
+              {path: 'statusAggregatorResults.generatedResults.1.data.statusAggregatorResults.status', value: 'ok'},
             ]
           }),
 
