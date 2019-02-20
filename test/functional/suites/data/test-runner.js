@@ -1,5 +1,5 @@
 const extractNumbers = require('extract-numbers')
-const tr = require('../../test-runners/base')
+const tr = require('./test-runners/base')
 
 module.exports = (dataset, assertPath, asserts,
                   testCallback=(tr,assertPath,testData)=>

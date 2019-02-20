@@ -30,7 +30,15 @@ module.exports = {
         dc([
           createHandler(emptySuccessHandler(),'one'),
           createHandler(emptySuccessHandler(),'two')
-        ], '003 successful 1', {goodBad: 'ok'}),
+        ], '003 successful 1',
+          {
+            goodBad: 'ok',
+            objectPath: [
+              {path: 'statusAggregatorResults.status', value: 'ok'},
+              {path: 'statusAggregatorResults.generatedResults.data[0].statusAggregatorResultsstatus', value: 'ok'},
+              {path: 'statusAggregatorResults.generatedResults.data[1].statusAggregatorResultsstatus', value: 'ok'},
+            ]
+          }),
 
         dc([
           createHandler(emptySuccessHandler(),'one'),
