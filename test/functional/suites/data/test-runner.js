@@ -8,6 +8,7 @@ module.exports = (dataset, assertPath, asserts,
     order:extractNumbers(a)[0],
     pathBegin: a.slice(0, a.indexOf('.'))
   }))
+  // l(magic)()
   magic.forEach(testEntry => {
     const testData = dataset[testEntry.pathBegin][testEntry.order]
     testCallback(tr,assertPath,testData,assertPath)

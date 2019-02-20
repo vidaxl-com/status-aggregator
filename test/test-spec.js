@@ -1,4 +1,4 @@
-process.env.DEBUG = ' express:, status-aggregator-test:*'
+// process.env.DEBUG = ' express:, status-aggregator-test:*'
 
 require('cowlog')();
 
