@@ -17,11 +17,16 @@ module.exports= dslFramework(
 
     let name = parameters.arguments('name', 'lastArgument',"undefined name")
     return new Promise(async (resolve, reject) => {
+      let mysqlResults = await require('./processors/databases/mysql')(flatten(parameters.arguments('addMysql', 'allEntries', [])))
       let statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
-      let status = statusAggregatorResults.status
-      const resolveData = {statusAggregatorResults, name, status}
+      let status = statusAggregatorResults.status === 'ok' && mysqlResults.status === 'ok' ? 'ok' : 'bad'
+      // let status = statusAggregatorResults.status
+      let resolveData = {statusAggregatorResults, name, status}
       if(extraData){
-        resolveData.extraData = extraData
+        resolveData = Object.assign(resolveData,{extraData})
+      }
+      if(mysqlResults.results.length){
+        resolveData = Object.assign(resolveData,{mysqlResults})
       }
       resolve(resolveData)
       if(res){

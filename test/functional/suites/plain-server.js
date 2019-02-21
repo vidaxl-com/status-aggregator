@@ -1,15 +1,14 @@
 const axios = require('axios')
   , {expect} = require('chai')
-  , serverStarter = require('../../../test-services/serverStarter')
-  , emptySuccessHandler = require('../../../test-services/handlers/empty-success-service')
-  , emptyfailureHandler = require('../../../test-services/handlers/empty-failure-service')
-  , nonExistingfailureHandler = require('../../../test-services/handlers/non-existing-failure-service')
+  , serverStarter = require('../test-services/serverStarter')
+  , emptySuccessHandler = require('../test-services/handlers/empty-success-service')
+  , emptyfailureHandler = require('../test-services/handlers/empty-failure-service')
+  , nonExistingfailureHandler = require('../test-services/handlers/non-existing-failure-service')
   , assert = require('assert')
   , extractNumbers = require('extract-numbers')
-  , statusGenerator = require('../../../../../src/index')
+  , statusGenerator = require('../../../src')
 
 module.exports =  describe('Plain-server suite', ()=>{
-
   it('successful request', async ()=>{
     const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
     const data = await axios.get(server.getStatusUrl())

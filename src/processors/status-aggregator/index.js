@@ -1,4 +1,5 @@
   const apiGetter = require('./data-getter')
+  , op = require('object-path')
   , dataPatcher = (data, success = true, timeSpan) => {
   const resultingData = Object.assign(
     {
@@ -20,8 +21,7 @@ module.exports= (parameters) => {
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
-
-
+  
     return new Promise(async (resolve, reject) => {
       let status = !fail
       let dataSent = {}
