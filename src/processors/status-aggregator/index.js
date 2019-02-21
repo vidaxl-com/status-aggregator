@@ -1,4 +1,4 @@
-  const apiGetter = require('../../data-getters/status-aggregator')
+  const apiGetter = require('./data-getter')
   , dataPatcher = (data, success = true, timeSpan) => {
   const resultingData = Object.assign(
     {
