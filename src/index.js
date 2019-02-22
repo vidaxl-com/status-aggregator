@@ -27,6 +27,7 @@ module.exports= dslFramework(
       let mysqlResults = await getDbResults('mysql', parameters)
       let mongoResults = await getDbResults('mongo', parameters)
       let couchdbResults = await getDbResults('couchdb', parameters)
+      let elasticResults = await getDbResults('elastic', parameters)
       let statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
 
       let status =
@@ -48,6 +49,9 @@ module.exports= dslFramework(
       }
       if(couchdbResults.results.length){
         resolveData = Object.assign(resolveData,{couchdbResults})
+      }
+      if(elasticResults.results.length){
+        resolveData = Object.assign(resolveData,{elasticResults})
       }
 
       resolve(resolveData)
