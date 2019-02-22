@@ -3,8 +3,6 @@ const axios = require('axios')
   , serverStarter = require('../../../test-services/serverStarter')
   , statusGenerator = require('../../../../../src')
 
-jsUcfirst = (string) => string.charAt(0).toUpperCase() + string.slice(1)
-
 module.exports =  describe('couchdb', ()=>{
   it('successful connection', async ()=>{
     const server = await serverStarter.handler((req,res)=>{

@@ -6,7 +6,14 @@ const dslFramework = require('dsl-framework').noPromoises()
           responseSend(res, resultingData, oldStyleRequest)
           resolve(resultingData)
         })
+  , jsUcfirst = (string) => string.charAt(0).toUpperCase() + string.slice(1)
+  , getDbResults = (dbType, parameters) => new Promise(async (resolve, reject) => {
+      const result = await require('./processors/databases/base')
+      (require(`./processors/databases/${dbType}`))
+      (flatten(parameters.arguments(`add${jsUcfirst(dbType)}`, 'allEntries', [])))
 
+      resolve(result)
+    })
 
 module.exports= dslFramework(
   (e, parameters) => {
@@ -17,23 +24,17 @@ module.exports= dslFramework(
 
     let name = parameters.arguments('name', 'lastArgument',"undefined name")
     return new Promise(async (resolve, reject) => {
-
-      let mysqlResults = await require('./processors/databases/base')
-      (require('./processors/databases/mysql'))
-      (flatten(parameters.arguments('addMysql', 'allEntries', [])))
-
-      let mongoResults = await require('./processors/databases/base')
-      (require('./processors/databases/mongo'))
-      (flatten(parameters.arguments('addMongo', 'allEntries', [])))
-
-      let couchdbResults = await require('./processors/databases/base')
-      (require('./processors/databases/couchdb'))
-      (flatten(parameters.arguments('addCouchdb', 'allEntries', [])))
-
-      // l(couchdbResults).die()
-
+      let mysqlResults = await getDbResults('mysql', parameters)
+      let mongoResults = await getDbResults('mongo', parameters)
+      let couchdbResults = await getDbResults('couchdb', parameters)
       let statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
-      let status = statusAggregatorResults.status === 'ok' && mysqlResults.status === 'ok' ? 'ok' : 'bad'
+
+      let status =
+        statusAggregatorResults.status === 'ok' &&
+        mysqlResults.status === 'ok' &&
+        mongoResults.status === 'ok' &&
+        couchdbResults.status === 'ok' ? 'ok' : 'bad'
+
       let resolveData = {statusAggregatorResults, name, status}
 
       if(extraData){
