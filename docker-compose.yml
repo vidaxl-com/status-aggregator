@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.0'
 services:
   mysql:
     image: mysql:5.7
@@ -15,26 +15,23 @@ services:
       # <Port exposed> : < MySQL Port running inside container>
       - '3306:3306'
     expose:
-      # Opens port 3306 on the container
       - '3306'
-      # Where our data will be persisted
-    volumes:
-      - my-db:/var/lib/mysql
 
   mongo:
     image: 'mongo:3.4.1'
     ports:
       - '27017:27017'
-    volumes:
-      - 'mongo:/var/lib/mongo'
+    expose:
+      - '27017'
+
   couchdb:
     container_name: couchdb
     image: apache/couchdb:2.2.0
     restart: always
     ports:
       - 5984:5984
-    volumes:
-      - ./test/couchdb/data:/opt/couchdb/data
+    expose:
+      - '5984'
     environment:
       - 'COUCHDB_USER=admin'
       - 'COUCHDB_PASSWORD=password'
@@ -51,18 +48,7 @@ services:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - esdata1:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
-
-
-
-volumes:
-  my-db:
-  mongo:
-  esdata1:
-    driver: local
-
-#networks:
-#  esnet:
+    expose:
+      - '9200'

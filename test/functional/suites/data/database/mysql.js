@@ -13,7 +13,7 @@ module.exports = describe('mysql', ()=>{
     it('successful connection to mysql', async ()=>{
       const server = await serverStarter.handler((req,res)=>{
         statusGenerator.addMysql({
-          host     : 'localhost',
+          host     : '0.0.0.0',
           user     : 'user',
           password : 'password',
           connectTimeout: 200
@@ -29,7 +29,7 @@ module.exports = describe('mysql', ()=>{
     it('failed connection to mysql', async ()=>{
       const server = await serverStarter.handler((req,res)=>{
         statusGenerator.addMysql({
-          host     : 'localhost',
+          host     : '0.0.0.0',
           user     : 'user',
           password : 'passwordWrong',
           connectTimeout: 200
