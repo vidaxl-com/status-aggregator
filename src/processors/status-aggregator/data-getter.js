@@ -14,7 +14,6 @@ module.exports = (apis, timeout) => new Promise(async (resolve, reject)=>{
           },
           timeout: timeout
         })
-        // l(apiResult.data)()
         results.push({data: apiResult.data, httpStatus: apiResult.status})
       }
       catch (e) {

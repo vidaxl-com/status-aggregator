@@ -27,6 +27,19 @@ services:
       - '27017:27017'
     volumes:
       - 'mongo:/var/lib/mongo'
+  couchdb:
+    container_name: couchdb
+    image: apache/couchdb:2.2.0
+    restart: always
+    ports:
+      - 5984:5984
+    volumes:
+      - ./test/couchdb/data:/opt/couchdb/data
+    environment:
+      - 'COUCHDB_USER=admin'
+      - 'COUCHDB_PASSWORD=password'
+
+
 
 # Names our volume
 volumes:

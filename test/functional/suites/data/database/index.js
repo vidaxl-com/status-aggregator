@@ -1,4 +1,5 @@
 module.exports =  describe('Database suite', ()=> {
-require('./mysql')
+  require('./mysql')
   require('./mongo')
+  require('./couchdb')
 })
