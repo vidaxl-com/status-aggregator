@@ -32,9 +32,9 @@ module.exports= dslFramework(
 
       let status =
         statusAggregatorResults.status === 'ok' &&
-        mysqlResults.status === 'ok' &&
-        mongoResults.status === 'ok' &&
-        couchdbResults.status === 'ok' ? 'ok' : 'bad'
+        (mysqlResults.status === 'ok') &&
+        (mongoResults.status === 'ok') &&
+        (couchdbResults.status === 'ok') ? 'ok' : 'bad'
 
       let resolveData = {statusAggregatorResults, name, status}
 
