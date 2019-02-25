@@ -3,7 +3,7 @@ const dslFramework = require('dsl-framework').noPromoises()
   , sendStatusReport = async (res, resultingData, oldStyleRequest) =>
         new Promise((resolve, reject) =>{
           const {responseSend} = require('./sever-data-adapters/express-restify-adapter')(oldStyleRequest)
-          responseSend(res, resultingData, oldStyleRequest)
+          responseSend(res, resultingData)
           resolve(resultingData)
         })
   , jsUcfirst = (string) => string.charAt(0).toUpperCase() + string.slice(1)
@@ -53,6 +53,8 @@ module.exports= dslFramework(
       if(elasticResults.results.length){
         resolveData = Object.assign(resolveData,{elasticResults})
       }
+      const version = require('../package.json').version
+      resolveData.version = version
 
       resolve(resolveData)
       if(res){

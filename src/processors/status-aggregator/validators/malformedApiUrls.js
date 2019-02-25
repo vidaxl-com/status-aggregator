@@ -21,7 +21,7 @@ module.exports = (apis, looseUrlCheck) => {
         :
         this.malformedUrls.map((url)=>{
           `Malformed statusAggregator api URL: ${url}`
-        }).join('\n').concat('\n')
+        }).join('\n')
     }
   }
 }

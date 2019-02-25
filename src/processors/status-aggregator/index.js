@@ -26,10 +26,11 @@ module.exports= (parameters) => {
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
 
     return new Promise(async (resolve, reject) => {
-      let status = !fail
       let dataSent = {}
       dataSent.failMessage = ''
-      if(status && failMsg){
+
+      let status = !fail
+      if(!status){
         dataSent.failMessage = failMsg ? failMsg : 'Failed by request.\n'
       }
       let generatedResults = []
