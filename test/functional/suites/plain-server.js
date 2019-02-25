@@ -30,10 +30,10 @@ module.exports =  describe('Plain-server suite', ()=>{
       .handler(nonExistingfailureHandler(2)).name('dependency does not exists')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('bad')
-    expect(!!data.data.statusAggregatorResults.msg).to.equal(true)
-    expect(data.data.statusAggregatorResults.msg.includes(' was not successful')).to.equal(true)
-    expect(data.data.statusAggregatorResults.msg.includes('Connecting to http://localhost:')).to.equal(true)
-    assert(extractNumbers(data.data.statusAggregatorResults.msg).length === 2)
+    expect(!!data.data.statusAggregatorResults.failMessage).to.equal(true)
+    expect(data.data.statusAggregatorResults.failMessage.includes(' was not successful')).to.equal(true)
+    expect(data.data.statusAggregatorResults.failMessage.includes('Connecting to http://localhost:')).to.equal(true)
+    assert(extractNumbers(data.data.statusAggregatorResults.failMessage).length === 2)
     server.stop()
   })
 
@@ -170,7 +170,6 @@ module.exports =  describe('Plain-server suite', ()=>{
         server0.stop()
         server.stop()
       })
-
     })
   })
 })

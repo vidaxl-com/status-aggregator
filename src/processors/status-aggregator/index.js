@@ -1,9 +1,8 @@
   const apiGetter = require('./data-getter')
-  , op = require('object-path')
   , dataPatcher = (data, success = true, timeSpan) => {
-  if(!data.failMessage){
-    delete data.failMessage
-  }
+    if(!data.failMessage){
+      delete data.failMessage
+    }
   const resultingData = Object.assign(
     {
       status:success?'ok':'bad',
@@ -30,18 +29,17 @@ module.exports= (parameters) => {
       dataSent.failMessage = ''
 
       let status = !fail
+
       if(!status){
         dataSent.failMessage = failMsg ? failMsg : 'Failed by request.\n'
       }
       let generatedResults = []
       if (statusAggregatorApis) {
-        let msg = ''
         let validUrls = true
         if(!looseUrlCheck){
           const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis, looseUrlCheck)
           validUrls = urlValidationResults.ok()
           dataSent.failMessage += urlValidationResults.msg()
-          msg.concat(validUrls ? '' : urlValidationResults.msg())
         }
         if(looseUrlCheck){
           statusAggregatorApis = statusAggregatorApis.map(row=>[require('addhttp')(row[0])])
@@ -49,8 +47,8 @@ module.exports= (parameters) => {
         const apiGetterResults = await apiGetter(statusAggregatorApis, requestTimeout)
         const validApiResponses = apiGetterResults.ok()
 
-        msg += (validApiResponses ? '' : apiGetterResults.msg())
-        dataSent.msg = msg ? msg:undefined
+        dataSent.failMessage += validApiResponses ? '' : apiGetterResults.msg()
+        // dataSent.msg = msg ? msg:''
         generatedResults = apiGetterResults.results
 
         //todo: check this validation
