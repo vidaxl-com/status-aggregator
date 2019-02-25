@@ -1,7 +1,7 @@
 const isUrl = require('is-url')
-module.exports = apis => {
+module.exports = (apis, looseUrlCheck) => {
   const malformedUrls=[]
-  if(!!apis){
+  if(!!apis && !looseUrlCheck){
     apis.forEach(apiArray => apiArray.forEach(api =>{
         if(!isUrl(api)){
           malformedUrls.push(api)
@@ -21,7 +21,7 @@ module.exports = apis => {
         :
         this.malformedUrls.map((url)=>{
           `Malformed statusAggregator api URL: ${url}`
-        }).join('\n')
+        }).join('\n').concat('\n')
     }
   }
 }

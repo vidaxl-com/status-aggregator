@@ -1,6 +1,9 @@
   const apiGetter = require('./data-getter')
   , op = require('object-path')
   , dataPatcher = (data, success = true, timeSpan) => {
+  if(!data.failMessage){
+    delete data.failMessage
+  }
   const resultingData = Object.assign(
     {
       status:success?'ok':'bad',
@@ -21,20 +24,22 @@ module.exports= (parameters) => {
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
-  
+
     return new Promise(async (resolve, reject) => {
       let status = !fail
       let dataSent = {}
+      dataSent.failMessage = ''
       if(status && failMsg){
-        dataSent.failMessage = failMsg ? failMsg : 'Failed by request.'
+        dataSent.failMessage = failMsg ? failMsg : 'Failed by request.\n'
       }
       let generatedResults = []
       if (statusAggregatorApis) {
         let msg = ''
         let validUrls = true
         if(!looseUrlCheck){
-          const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis)
+          const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis, looseUrlCheck)
           validUrls = urlValidationResults.ok()
+          dataSent.failMessage += urlValidationResults.msg()
           msg.concat(validUrls ? '' : urlValidationResults.msg())
         }
         if(looseUrlCheck){
@@ -42,14 +47,25 @@ module.exports= (parameters) => {
         }
         const apiGetterResults = await apiGetter(statusAggregatorApis, requestTimeout)
         const validApiResponses = apiGetterResults.ok()
+
         msg += (validApiResponses ? '' : apiGetterResults.msg())
         dataSent.msg = msg ? msg:undefined
         generatedResults = apiGetterResults.results
+
         //todo: check this validation
         const somethingWentWrongDuringTheCommunitcation =
-          !!generatedResults.filter(item => item.httpStatus !== 200).length || !Object.keys(generatedResults).length
+          !!generatedResults.filter(item => item.httpStatus !== 200).length
+        if(somethingWentWrongDuringTheCommunitcation){
+          dataSent.failMessage += 'One of the http status of the responses was different than 200.\n'
+        }
+
         const badApiResponses = require('./validators/badApiResponses')(generatedResults)
         const weHaveBadResponses = !!badApiResponses.length
+
+        if(somethingWentWrongDuringTheCommunitcation){
+          dataSent.failMessage += 'Some status-aggregator messages are "bad".\n'
+        }
+
         status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
       }
       const d = dataPatcher(dataSent, status, timeSpan)
