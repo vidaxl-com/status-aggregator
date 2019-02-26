@@ -161,15 +161,29 @@ module.exports =  describe('Plain-server suite', ()=>{
       })
 
       it('success by http url (success) .looseApiUrlCheck()', async () => {
-        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server0 = await serverStarter.handler(
+          (req,res)=>{
+            statusGenerator.addResponse(res).looseApiUrlCheck()
+          }
+        ).name('success')()
+        const server01 = await serverStarter.handler(
+          (req,res)=>{
+            statusGenerator.addResponse(res).addApi(removeProtocoll(server0.getStatusUrl())).looseApiUrlCheck()
+          }
+        ).name('success')()
         const server = await serverStarter.handler((req,res)=>{
-          statusGenerator.addResponse(res).addApi(server0.getStatusUrl()).looseApiUrlCheck()
+          statusGenerator.addResponse(res).addApi(removeProtocoll(server01.getStatusUrl())).looseApiUrlCheck()
         }).name('success by non http url')()
         const data = await axios.get(server.getStatusUrl())
         expect(data.data.status).to.equal('ok')
+        server01.stop()
         server0.stop()
         server.stop()
       })
+    })
+
+    describe('aaaa', ()=>{
+
     })
   })
 })

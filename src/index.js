@@ -1,4 +1,5 @@
 const dslFramework = require('dsl-framework').noPromoises()
+  op = require('object-path')
   , flatten = require('array-flatten')
   , sendStatusReport = async (res, resultingData, oldStyleRequest) =>
         new Promise((resolve, reject) =>{
@@ -53,8 +54,9 @@ module.exports= dslFramework(
       if(elasticResults.results.length){
         resolveData = Object.assign(resolveData,{elasticResults})
       }
-      const version = require('../package.json').version
-      resolveData.version = version
+      op.set(resolveData, 'info.version.status-aggregator', require('../package.json').version)
+      op.set(resolveData, 'info.version.node', process.version)
+      op.set(resolveData, 'info.server.uptime', require('server-uptime'))
 
       resolve(resolveData)
       if(res){

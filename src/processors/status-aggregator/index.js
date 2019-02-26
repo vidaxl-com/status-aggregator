@@ -14,6 +14,7 @@
 
   return resultingData
 }
+, op = require('object-path')
 
 module.exports= (parameters) => {
     const timeSpan = require('time-span')
@@ -28,12 +29,13 @@ module.exports= (parameters) => {
       let dataSent = {}
       dataSent.failMessage = ''
 
-      let status = !fail
-
-      if(!status){
+      if(fail){
         dataSent.failMessage = failMsg ? failMsg : 'Failed by request.\n'
       }
       let generatedResults = []
+
+      let stat = !fail
+
       if (statusAggregatorApis) {
         let validUrls = true
         if(!looseUrlCheck){
@@ -65,9 +67,17 @@ module.exports= (parameters) => {
           dataSent.failMessage += 'Some status-aggregator messages are "bad".\n'
         }
 
-        status = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && status
+        stat = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && !fail
+        op.set(dataSent,'debug.status', stat)
+        op.set(dataSent,'debug.notWeHaveBadResponses', !weHaveBadResponses)
+        op.set(dataSent,'debug.notSomethingWentWrongDuringTheCommunitcation', !somethingWentWrongDuringTheCommunitcation)
+        op.set(dataSent,'debug.validUrls', validUrls)
+        op.set(dataSent,'debug.validApiResponses', validApiResponses)
+        op.set(dataSent,'debug.notFail', !fail)
+
+        // l( !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && !fail, stat)()
       }
-      const d = dataPatcher(dataSent, status, timeSpan)
+      const d = dataPatcher(dataSent, stat, timeSpan)
       d.generatedResults = generatedResults;
       resolve(d)
     })

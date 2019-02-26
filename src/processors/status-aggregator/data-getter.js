@@ -14,7 +14,7 @@ module.exports = (apis, timeout) => new Promise(async (resolve, reject)=>{
           },
           timeout: timeout
         })
-        results.push({data: apiResult.data, httpStatus: apiResult.status})
+        results.push({data: apiResult.data, httpStatus: apiResult.status, requestedUrl:apisFlattened[i]})
       }
       catch (e) {
         errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
