@@ -38,15 +38,8 @@ module.exports= (parameters) => {
 
       if (statusAggregatorApis) {
         let validUrls = true
-        if(!looseUrlCheck){
-          const urlValidationResults = require('./validators/malformedApiUrls')(statusAggregatorApis, looseUrlCheck)
-          validUrls = urlValidationResults.ok()
-          dataSent.failMessage += urlValidationResults.msg()
-        }
-        if(looseUrlCheck){
-          statusAggregatorApis = statusAggregatorApis.map(row=>[require('addhttp')(row[0])])
-        }
-        const apiGetterResults = await apiGetter(statusAggregatorApis, requestTimeout)
+
+        const apiGetterResults = await apiGetter(statusAggregatorApis, requestTimeout, looseUrlCheck)
         const validApiResponses = apiGetterResults.ok()
 
         dataSent.failMessage += validApiResponses ? '' : apiGetterResults.msg()
@@ -55,18 +48,19 @@ module.exports= (parameters) => {
 
         //todo: check this validation
         const somethingWentWrongDuringTheCommunitcation =
-          !!generatedResults.filter(item => item.httpStatus !== 200).length
+          !!generatedResults.filter(item => item.response.httpStatus !== 200).length
         if(somethingWentWrongDuringTheCommunitcation){
           dataSent.failMessage += 'One of the http status of the responses was different than 200.\n'
         }
 
         const badApiResponses = require('./validators/badApiResponses')(generatedResults)
         const weHaveBadResponses = !!badApiResponses.length
-
+        if(weHaveBadResponses){
+          dataSent.failMessage += 'At least one of the request has "bad" responses.\n'
+        }
         if(somethingWentWrongDuringTheCommunitcation){
           dataSent.failMessage += 'Some status-aggregator messages are "bad".\n'
         }
-
         stat = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && !fail
         op.set(dataSent,'debug.status', stat)
         op.set(dataSent,'debug.notWeHaveBadResponses', !weHaveBadResponses)

@@ -1,3 +1,5 @@
+process.env.DEBUG = ' express:, status-aggregator-test:*'
+
 const axios = require('axios')
   , {expect} = require('chai')
   , serverStarter = require('../test-services/serverStarter')
@@ -7,52 +9,47 @@ const axios = require('axios')
   , assert = require('assert')
   , extractNumbers = require('extract-numbers')
   , statusGenerator = require('../../../src')
+  , removeProtocoll = url => url.replace(/(^\w+:|^)\/\//, '');
 
 require('cowlog')()
 
 cc = async () =>{
   const server0 = await serverStarter.handler((req,res)=>{
     statusGenerator.addResponse(res)
-    // .addApi('http://api-gateway.sprint.local.vidaxl.beer/productparentservice/sdoservice/v1/product-parent/status')
-    //   .addApi(server0.getStatusUrl())
       .addExtraData({a:'ffff',b:'cc'})
-      .name('BBBBBBBBBB')
-
-  }).name('success')()
+      .name('server0')
+  }).name('server0')()
   const server00 = await serverStarter.handler((req,res)=>{
     statusGenerator.addResponse(res)
     // .addApi('http://api-gateway.sprint.local.vidaxl.beer/productparentservice/sdoservice/v1/product-parent/status')
     // .addApi('http://api-gateway.sprint.local.vidaxl.beer/1/cd6e7aff75a80308ee37cf8f2979600a/productcatalogservice/sdoservice/status')
       .addExtraData({a:'GGG',b:'cc'})
-      .name('AAAAAAAA')
-      .addApi(server0.getStatusUrl())
+      .name('server00')
+      .addApi(removeProtocoll(server0.getStatusUrl()))
+      .looseApiUrlCheck
       ()
+  }).name('server00')()
 
-  }).name('success')()
   const server000 = await serverStarter.handler((req,res)=>{
     statusGenerator.addResponse(res)
     // .addApi('http://api-gateway.sprint.local.vidaxl.beer/productparentservice/sdoservice/v1/product-parent/status')
     // .addApi('http://api-gateway.sprint.local.vidaxl.beer/1/cd6e7aff75a80308ee37cf8f2979600a/productcatalogservice/sdoservice/status')
       .addExtraData({a:'HHHH',b:'cc'})
-      .name('CCCCCCCC')
+      .name('server000')
       .addApi(server00.getStatusUrl())
       ()
 
-  }).name('success')()
+  }).name('server000')()
   const server = await serverStarter.handler((req,res)=>{
     // statusGenerator.addResponse(res).addApi(statusWithoutProtocoll)()
     statusGenerator.addResponse(res)
       .addExtraData({a:'LLLL',b:'cc'})
-      .name('DDDDDDD')
+      .name('server')
       .addApi(server000.getStatusUrl())
       ()
-  }).name('fail by non http url')
-
-    ()
-  // const data = await axios.get(server.getStatusUrl())
+  }).name('server')()
   l(server.getStatusUrl())()
-  // server0.stop()
-  // server.stop()
+
 }
 
 cc()

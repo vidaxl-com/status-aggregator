@@ -33,7 +33,7 @@ module.exports =  describe('Plain-server suite', ()=>{
     expect(!!data.data.statusAggregatorResults.failMessage).to.equal(true)
     expect(data.data.statusAggregatorResults.failMessage.includes(' was not successful')).to.equal(true)
     expect(data.data.statusAggregatorResults.failMessage.includes('Connecting to http://localhost:')).to.equal(true)
-    assert(extractNumbers(data.data.statusAggregatorResults.failMessage).length === 2)
+    assert(extractNumbers(data.data.statusAggregatorResults.failMessage).length === 3)
     server.stop()
   })
 
@@ -138,10 +138,12 @@ module.exports =  describe('Plain-server suite', ()=>{
 
       it('default behaviour (fail)', async () => {
         const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
-        const server = await serverStarter.handler((req,res)=>{
-          const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
-          statusGenerator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
-        }).name('fail by non http url')()
+        const server = await serverStarter.handler((req,res) =>
+          statusGenerator
+            .addResponse(res)
+            .addApi(removeProtocoll(server0.getStatusUrl()))
+            .looseApiUrlCheck())
+          .name('fail by non http url')()
         const data = await axios.get(server.getStatusUrl())
         expect(data.data.status).to.equal('ok')
         server0.stop()
