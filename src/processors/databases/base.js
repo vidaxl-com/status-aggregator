@@ -11,5 +11,5 @@ module.exports = (connector) => (configs) => new Promise(async (resolve, reject)
     results.push(result)
   }
 
-  resolve({results, status})
+  resolve({status, results})
 })

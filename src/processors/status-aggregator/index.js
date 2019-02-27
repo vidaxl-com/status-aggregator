@@ -3,15 +3,17 @@
     if(!data.failMessage){
       delete data.failMessage
     }
-  const resultingData = Object.assign(
+  let resultingData = Object.assign(
+    data,
     {
       status:success?'ok':'bad',
       timer:{
         durationMs: timeSpan()(),
         sent:new Date().toUTCString()
       },
-    }, data)
-
+    })
+// l(resultingData)()
+//     console.log(resultingData)
   return resultingData
 }
 , op = require('object-path')

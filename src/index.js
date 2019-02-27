@@ -37,7 +37,7 @@ module.exports= dslFramework(
         (mongoResults.status === 'ok') &&
         (couchdbResults.status === 'ok') ? 'ok' : 'bad'
 
-      let resolveData = {statusAggregatorResults, name, status}
+      let resolveData = {status, statusAggregatorResults, name}
 
       if(extraData){
         resolveData = Object.assign(resolveData,{extraData})

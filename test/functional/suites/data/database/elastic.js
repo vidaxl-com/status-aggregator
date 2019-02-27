@@ -16,7 +16,7 @@ module.exports =  describe('elasticSearch', ()=>{
     server.stop()
   })
 
-  // it('successful connection', async ()=>{
+  // it('failed connection', async ()=>{
   //   const server = await serverStarter.handler((req,res)=>{
   //     statusGenerator.addElastic({host: 'localhost:9201'}).addResponse(res)
   //     ()

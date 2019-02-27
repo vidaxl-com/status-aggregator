@@ -10,9 +10,10 @@ module.exports = (config) =>new Promise(async (resolve, reject)=>{
       if (error) {
         status = 'bad'
       }
-      resolve({status})
     })
   } catch (e) {
     status = 'bad'
   }
+
+  resolve({status})
 })
