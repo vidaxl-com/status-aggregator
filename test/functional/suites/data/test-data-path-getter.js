@@ -1,6 +1,5 @@
 const flatten = require('flat')
   , arrayDsl = require('array-dsl')
-  , op = require('object-path')
 
 module.exports = (serverStructures) => {
   const flattenedTestData = flatten(serverStructures)

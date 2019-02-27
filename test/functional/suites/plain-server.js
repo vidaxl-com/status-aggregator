@@ -7,6 +7,8 @@ const axios = require('axios')
   , assert = require('assert')
   , extractNumbers = require('extract-numbers')
   , statusGenerator = require('../../../src')
+  , op = require('object-path')
+  , flatten = require('flat')
 
 module.exports =  describe('Plain-server suite', ()=>{
   it('successful request', async ()=>{
@@ -201,7 +203,77 @@ module.exports =  describe('Plain-server suite', ()=>{
       })
     })
 
-    describe('aaaa', ()=>{
+    describe('.debug()', ()=>{
+      describe('we use .debug()', ()=>{
+        it('.', async () => {
+          const server0 = await serverStarter.handler(
+            (req,res)=>{
+              statusGenerator.addResponse(res).looseApiUrlCheck()
+            }
+          ).name('success')()
+          const server01 = await serverStarter.handler(
+            (req,res)=>{
+              statusGenerator.addResponse(res).debug.addApi(removeProtocoll(server0.getStatusUrl())).looseApiUrlCheck()
+            }
+          ).name('success')()
+          const server = await serverStarter.handler((req,res)=>{
+            statusGenerator.addResponse(res).addApi(removeProtocoll(server01.getStatusUrl())).looseApiUrlCheck()
+          }).name('success by non http url')()
+          const data = await axios.get(server.getStatusUrl())
+          expect(data.data.status).to.equal('ok')
+          // l(data.data).die()
+          const responseData = data.data
+          let flatData = flatten(responseData)
+          Object.keys(flatData).filter(path => path.endsWith())
+          const debugPath = 'statusAggregatorResults.generatedResults.0.data.statusAggregatorResults.debug'
+          const debug = op.get(responseData, debugPath, false)
+          expect(debug).not.to.equal(false)
+          expect(op.get(debug,'parameters.looseUrlCheck')).to.equal(true)
+          expect(op.get(debug,'parameters.fail.failMsg')).to.equal(false)
+          expect(op.get(debug,'parameters.fail.fail')).to.equal(false)
+          expect(op.get(debug,'parameters.timeout')).to.equal(1000)
+          expect(op.get(debug,'allTrueGoodResponse.notFail')).to.equal(true)
+          expect(op.get(debug,'allTrueGoodResponse.validApiResponses')).to.equal(true)
+          expect(op.get(debug,'allTrueGoodResponse.validUrls')).to.equal(true)
+          expect(op.get(debug,'allTrueGoodResponse.notSomethingWentWrongDuringTheCommunitcation')).to.equal(true)
+          expect(op.get(debug,'allTrueGoodResponse.notWeHaveBadResponses')).to.equal(true)
+          expect(op.get(debug,'allTrueGoodResponse.status')).to.equal(true)
+
+          server01.stop()
+          server0.stop()
+          server.stop()
+        })
+      })
+      describe('we don\'t use .debug()', ()=>{
+        it('.', async () => {
+          const server0 = await serverStarter.handler(
+            (req,res)=>{
+              statusGenerator.addResponse(res).looseApiUrlCheck()
+            }
+          ).name('success')()
+          const server01 = await serverStarter.handler(
+            (req,res)=>{
+              statusGenerator.addResponse(res).addApi(removeProtocoll(server0.getStatusUrl())).looseApiUrlCheck()
+            }
+          ).name('success')()
+          const server = await serverStarter.handler((req,res)=>{
+            statusGenerator.addResponse(res).addApi(removeProtocoll(server01.getStatusUrl())).looseApiUrlCheck()
+          }).name('success by non http url')()
+          const data = await axios.get(server.getStatusUrl())
+          expect(data.data.status).to.equal('ok')
+          // l(data.data).die()
+          const responseData = data.data
+          let flatData = flatten(responseData)
+          Object.keys(flatData).filter(path => path.endsWith())
+          const debugPath = 'statusAggregatorResults.generatedResults.0.data.statusAggregatorResults.debug'
+          const debug = op.get(responseData, debugPath, false)
+          expect(debug).to.equal(false)
+
+          server01.stop()
+          server0.stop()
+          server.stop()
+        })
+      })
 
     })
   })
