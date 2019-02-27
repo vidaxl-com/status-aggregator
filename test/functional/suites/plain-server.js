@@ -164,22 +164,22 @@ module.exports =  describe('Plain-server suite', ()=>{
         server.stop()
       })
       // todo: make it run
-      // it('Applying .looseApiUrlCheck() but no apis added', async () => {
-      //   const server0 = await serverStarter.handler((req,res)=>{
-      //     statusGenerator.addResponse(res).looseApiUrlCheck()
-      //   }).name('Success .looseApiUrlCheck no API to check.')()
-      //
-      //   const server = await serverStarter.handler((req,res)=>{
-      //     statusGenerator.addResponse(res).
-      //     addApi(server0.getStatusUrl()).looseApiUrlCheck()
-      //   }).name('Success by non http url.')()
-      //
-      //   const data = await axios.get(server.getStatusUrl())
-      //   l(data.data).die()
-      //   expect(data.data.status).to.equal('ok')
-      //   server0.stop()
-      //   server.stop()
-      // })
+      it('Applying .looseApiUrlCheck() but no apis added', async () => {
+        const server0 = await serverStarter.handler((req,res)=>{
+          statusGenerator.addResponse(res).looseApiUrlCheck()
+        }).name('Success .looseApiUrlCheck no API to check.')()
+
+        const server = await serverStarter.handler((req,res)=>{
+          statusGenerator.addResponse(res).
+          addApi(server0.getStatusUrl()).looseApiUrlCheck()
+        }).name('Success by non http url.')()
+
+        const data = await axios.get(server.getStatusUrl())
+        // l(data.data).die()
+        expect(data.data.status).to.equal('ok')
+        server0.stop()
+        server.stop()
+      })
 
       it('success by http url (success) .looseApiUrlCheck()', async () => {
         const server0 = await serverStarter.handler(
