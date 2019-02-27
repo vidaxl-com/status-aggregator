@@ -163,7 +163,7 @@ module.exports =  describe('Plain-server suite', ()=>{
         server0.stop()
         server.stop()
       })
-      // todo: make it run
+
       it('Applying .looseApiUrlCheck() but no apis added', async () => {
         const server0 = await serverStarter.handler((req,res)=>{
           statusGenerator.addResponse(res).looseApiUrlCheck()
