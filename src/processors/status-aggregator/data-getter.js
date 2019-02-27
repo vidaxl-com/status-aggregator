@@ -5,8 +5,9 @@ const op = require('object-path')
 module.exports = (apis, timeout, looseUrlCheck) => new Promise(async (resolve, reject)=>{
   const apisFlattened = aFlatten(apis)
   let apiRequests = looseUrlCheck ? apis.map(url=>require('addhttp')(url)) : apisFlattened
-    const results = []
-    const errorResults = []
+  const results = []
+    , errorResults = []
+    , errorObjects = []
     for (let i = 0; i < apiRequests.length; i++) {
       const result = {}
       op.set(result, 'request.timeout', timeout)
@@ -26,6 +27,12 @@ module.exports = (apis, timeout, looseUrlCheck) => new Promise(async (resolve, r
 
       }
       catch (e) {
+        errorObjects.push({
+            name:e.name,
+            message:e.message,
+            stack:e.stack,
+            response:e.response
+          })
         errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
       }
       results.push(result)
@@ -34,6 +41,7 @@ module.exports = (apis, timeout, looseUrlCheck) => new Promise(async (resolve, r
     resolve({
       results,
       errorResults,
+      errorObjects,
       ok: function () {
         return !this.errorResults.length
       },

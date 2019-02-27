@@ -62,14 +62,19 @@ module.exports= (parameters) => {
           dataSent.failMessage += 'Some status-aggregator messages are "bad".\n'
         }
         stat = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && !fail
-        op.set(dataSent,'debug.status', stat)
-        op.set(dataSent,'debug.notWeHaveBadResponses', !weHaveBadResponses)
-        op.set(dataSent,'debug.notSomethingWentWrongDuringTheCommunitcation', !somethingWentWrongDuringTheCommunitcation)
-        op.set(dataSent,'debug.validUrls', validUrls)
-        op.set(dataSent,'debug.validApiResponses', validApiResponses)
-        op.set(dataSent,'debug.notFail', !fail)
+        op.set(dataSent,'debug.allTrueGoodResponse.status', stat)
+        op.set(dataSent,'debug.allTrueGoodResponse.notWeHaveBadResponses', !weHaveBadResponses)
+        op.set(dataSent,'debug.allTrueGoodResponse.notSomethingWentWrongDuringTheCommunitcation', !somethingWentWrongDuringTheCommunitcation)
+        op.set(dataSent,'debug.allTrueGoodResponse.validUrls', validUrls)
+        op.set(dataSent,'debug.allTrueGoodResponse.validApiResponses', validApiResponses)
+        op.set(dataSent,'debug.allTrueGoodResponse.notFail', !fail)
 
-        // l( !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && !fail, stat)()
+        op.set(dataSent,'debug.parameters.timeout', requestTimeout)
+        op.set(dataSent,'debug.parameters.fail', {fail,failMsg})
+        op.set(dataSent,'debug.parameters.looseUrlCheck', looseUrlCheck)
+        if(weHaveBadResponses){
+          op.set(dataSent,'debug.response.errors', apiGetter.errorObjects)
+        }
       }
       const d = dataPatcher(dataSent, stat, timeSpan)
       d.generatedResults = generatedResults;
