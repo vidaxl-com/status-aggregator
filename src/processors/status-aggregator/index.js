@@ -35,12 +35,30 @@ module.exports= (parameters) => {
     , requestObject = parameters.arguments('request', 'lastArgument', hasRequestObject?{query:{}}:false)
     , sessionTokenName = parameters.arguments('sessionToken', 'lastArgument', 'session-token')
     , noSession = parameters.arguments('noSession', 'lastArgument')
+    , mockId = parameters.arguments('mockId', 'lastArgument', 'mock')
     let sessionToken = parameters.arguments('sessionToken', 'lastArgument')
     sessionToken = (!noSession && sessionToken) ?
                       sessionToken : (!noSession && requestObject) ?
                         requestObject.query[sessionTokenName] ?
                           requestObject.query[sessionTokenName]: randomString() : (!noSession) ?
-                    randomString(): ''
+                    randomString(): false
+  const sessionModulePath = `session.${mockId}.${sessionToken}`
+    if(sessionToken){
+      const weGotTheSameSession = op.get(module, sessionModulePath)
+      if(weGotTheSameSession){
+        return new Promise(async (resolve, reject) => {
+          let dataSent = {}
+          dataSent.message = `${sessionTokenName}: ${sessionToken} is already in use on this server. To avoid any memory leaks. This request will not fetch the details`
+          const d = dataPatcher(dataSent, true, timeSpan)
+          resolve(d)
+        })
+      }
+
+      if(!weGotTheSameSession){
+        op.set(module, sessionModulePath, true)
+      }
+
+    }
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
     return new Promise(async (resolve, reject) => {
       let dataSent = {}
@@ -100,6 +118,9 @@ module.exports= (parameters) => {
       }
       const d = dataPatcher(dataSent, stat, timeSpan)
       d.generatedResults = generatedResults;
+      if(sessionToken){
+        op.del(module, sessionModulePath)
+      }
       resolve(d)
     })
   }

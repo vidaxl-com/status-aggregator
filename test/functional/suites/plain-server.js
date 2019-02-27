@@ -284,6 +284,7 @@ module.exports =  describe('Plain-server suite', ()=>{
           (req,res)=>{
             statusGenerator
               .addResponse(res)
+              .mockId('a')
               .request(req)()
           }
         ).name('success 0')()
@@ -292,6 +293,7 @@ module.exports =  describe('Plain-server suite', ()=>{
             statusGenerator
               .addResponse(res)
               .addApi(server0.getStatusUrl())
+              .mockId('b')
               .request(req)()
           }
         ).name('success 01')()
@@ -301,6 +303,7 @@ module.exports =  describe('Plain-server suite', ()=>{
             statusGenerator
               .addApi(server01.getStatusUrl())
               .addResponse(res)
+              .mockId('c')
               .request(req)()
           })
             .name('server')()
