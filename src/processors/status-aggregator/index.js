@@ -12,11 +12,17 @@
         sent:new Date().toUTCString()
       },
     })
-// l(resultingData)()
-//     console.log(resultingData)
+
   return resultingData
-}
-, op = require('object-path')
+  }
+  , op = require('object-path')
+  , randomString = () => require('random-string')({
+    length: 8,
+    numeric: true,
+    letters: true,
+    special: false,
+    exclude: ['i', 'm', 'r', 'e','I', 'M', 'R', 'E']
+  })
 
 module.exports= (parameters) => {
     const timeSpan = require('time-span')
@@ -25,8 +31,17 @@ module.exports= (parameters) => {
     , debug = parameters.command.has('debug')
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
+    , hasRequestObject = parameters.command.has('request')
+    , requestObject = parameters.arguments('request', 'lastArgument', hasRequestObject?{query:{}}:false)
+    , sessionTokenName = parameters.arguments('sessionToken', 'lastArgument', 'session-token')
+    , noSession = parameters.arguments('noSession', 'lastArgument')
+    let sessionToken = parameters.arguments('sessionToken', 'lastArgument')
+    sessionToken = (!noSession && sessionToken) ?
+                      sessionToken : (!noSession && requestObject) ?
+                        requestObject.query[sessionTokenName] ?
+                          requestObject.query[sessionTokenName]: randomString() : (!noSession) ?
+                    randomString(): ''
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
-
     return new Promise(async (resolve, reject) => {
       let dataSent = {}
       dataSent.failMessage = ''
@@ -41,7 +56,11 @@ module.exports= (parameters) => {
       if (statusAggregatorApis) {
         let validUrls = true
 
-        const apiGetterResults = await apiGetter(statusAggregatorApis, requestTimeout, looseUrlCheck)
+        const apiGetterResults = await apiGetter(statusAggregatorApis,
+          requestTimeout,
+          looseUrlCheck,
+          {sessionToken, sessionTokenName})
+
         const validApiResponses = apiGetterResults.ok()
 
         dataSent.failMessage += validApiResponses ? '' : apiGetterResults.msg()
@@ -76,11 +95,8 @@ module.exports= (parameters) => {
           op.set(dataSent,'debug.parameters.timeout', requestTimeout)
           op.set(dataSent,'debug.parameters.fail', {fail,failMsg})
           op.set(dataSent,'debug.parameters.looseUrlCheck', looseUrlCheck)
-          // if(weHaveBadResponses){
           op.set(dataSent,'debug.response.errors', apiGetterResults.errorObjects)
-          // }
         }
-
       }
       const d = dataPatcher(dataSent, stat, timeSpan)
       d.generatedResults = generatedResults;

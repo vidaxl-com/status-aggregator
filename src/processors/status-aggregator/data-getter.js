@@ -1,10 +1,19 @@
 const aFlatten = require('array-flatten')
-const axios = require('axios')
-const op = require('object-path')
+  , axios = require('axios')
+  , op = require('object-path')
+  , urlBuilder = require('build-url')
 
-module.exports = (apis, timeout, looseUrlCheck) => new Promise(async (resolve, reject)=>{
+module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(async (resolve, reject)=>{
+  const {sessionToken, sessionTokenName} = sessionDetails
   const apisFlattened = aFlatten(apis)
   let apiRequests = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
+  if(sessionToken){
+    queryParams = {}
+    queryParams[sessionTokenName] = sessionToken
+    apiRequests = apiRequests.map(url => urlBuilder(url, {
+      queryParams
+    }))
+  }
   const results = []
     , errorResults = []
     , errorObjects = []

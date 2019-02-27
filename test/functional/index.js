@@ -4,6 +4,7 @@ require('cowlog')()
 
 describe('Functional Tests', ()=>{
   require('./suites/plain-server')
+  // require('./suites/plain-server1')
   suiteRunner('Good/Bad request evaluation suite', serverStructures, 'goodBad')
   suiteRunner('deep object-path evaluation suite', serverStructures, 'objectPath')
   require('./suites/data/database')
