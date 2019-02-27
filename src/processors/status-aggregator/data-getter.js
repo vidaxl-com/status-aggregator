@@ -4,7 +4,7 @@ const op = require('object-path')
 
 module.exports = (apis, timeout, looseUrlCheck) => new Promise(async (resolve, reject)=>{
   const apisFlattened = aFlatten(apis)
-  let apiRequests = looseUrlCheck ? apis.map(url=>require('addhttp')(url)) : apisFlattened
+  let apiRequests = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
   const results = []
     , errorResults = []
     , errorObjects = []

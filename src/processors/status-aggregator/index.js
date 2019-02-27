@@ -18,7 +18,6 @@
 
 module.exports= (parameters) => {
     const timeSpan = require('time-span')
-    // , statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
     , requestTimeout = parameters.arguments('timeout', 'lastArgument', 1000)
     , fail = parameters.command.has('fail')
     , debug = parameters.command.has('debug')
@@ -51,16 +50,16 @@ module.exports= (parameters) => {
         const somethingWentWrongDuringTheCommunitcation =
           !!generatedResults.filter(item => item.response.httpStatus !== 200).length
         if(somethingWentWrongDuringTheCommunitcation){
-          dataSent.failMessage += 'One of the http status of the responses was different than 200.\n'
+          dataSent.failMessage += 'One of the http status of the responses was different than 200.|\n'
         }
 
         const badApiResponses = require('./validators/badApiResponses')(generatedResults)
         const weHaveBadResponses = !!badApiResponses.length
         if(weHaveBadResponses){
-          dataSent.failMessage += 'At least one of the request has "bad" responses.\n'
+          dataSent.failMessage += 'At least one of the request has "bad" responses.|\n'
         }
         if(somethingWentWrongDuringTheCommunitcation){
-          dataSent.failMessage += 'Some status-aggregator messages are "bad".\n'
+          dataSent.failMessage += 'Some status-aggregator messages are "bad".|\n'
         }
         stat = !weHaveBadResponses && !somethingWentWrongDuringTheCommunitcation && validUrls && validApiResponses && !fail
 
@@ -76,7 +75,7 @@ module.exports= (parameters) => {
           op.set(dataSent,'debug.parameters.fail', {fail,failMsg})
           op.set(dataSent,'debug.parameters.looseUrlCheck', looseUrlCheck)
           // if(weHaveBadResponses){
-          op.set(dataSent,'debug.response.errors', apiGetter.errorObjects)
+          op.set(dataSent,'debug.response.errors', apiGetterResults.errorObjects)
           // }
         }
 
