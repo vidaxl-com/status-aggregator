@@ -6,9 +6,11 @@
   "scripts": {
     "package-audit": "node_modules/.bin/check-audit",
     "depcheck": "node_modules/.bin/depcheck --ignores \"husky,depcheck,assert\"",
-    "test": "node_modules/.bin/nyc npm run test-dev",
+    "test": "node_modules/.bin/nyc  --reporter=lcov --reporter=clover --reporter=text --cache npm run test-dev",
     "test-dev": "node_modules/.bin/mocha test/*-spec.js",
-    "test-all": "npm run package-audit && npm run depcheck && npm test"
+    "test-quality": "npm run package-audit && npm run depcheck",
+    "test-all": "npm run test-quality && npm test",
+    "test-all-dev": "npm run test-quality && npm run test-dev"
   },
   "author": "Imre Toth",
   "repository": {
@@ -51,7 +53,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test-all"
+      "pre-commit": "npm run test-all-dev"
     }
   }
 }
