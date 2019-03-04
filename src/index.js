@@ -1,4 +1,4 @@
-const dslFramework = require('dsl-framework').noPromoises()
+const dslFramework = require('dsl-framework').noPromoises.noTriggerEndOfExecution()
   op = require('object-path')
   , flatten = require('array-flatten')
   , sendStatusReport = async (res, resultingData, oldStyleRequest) =>
