@@ -36,11 +36,14 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(a
 
       }
       catch (e) {
+        // l(e)('lol')('die')
         errorObjects.push({
-            name:e.name,
-            message:e.message,
-            stack:e.stack,
-            response:e.response
+            pendingData: op.get(e, 'request._currentRequest.socket._pendingData'),
+            currentUrl: op.get(e,'request._currentUrl'),
+            name: e.name,
+            message: e.message,
+            stack: e.stack,
+            response: e.response
           })
         errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
       }
