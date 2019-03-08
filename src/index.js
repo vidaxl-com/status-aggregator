@@ -55,6 +55,11 @@ module.exports= dslFramework(
         resolveData = Object.assign(resolveData,{elasticResults})
       }
       op.set(resolveData, 'info.version.status-aggregator', require('../package.json').version)
+
+      const otherVersions = parameters.arguments('version')
+      if(otherVersions) {
+        otherVersions.forEach(entry => op.set(resolveData, `info.version.${entry[0]}`, `info.version.${entry[1]}`))
+      }
       op.set(resolveData, 'info.version.node', process.version)
       op.set(resolveData, 'info.server.uptime', require('server-uptime'))
 
