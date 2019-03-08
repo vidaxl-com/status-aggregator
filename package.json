@@ -30,7 +30,7 @@
     "mysql": "^2.16.0",
     "npm": "^6.8.0",
     "server-uptime": "^1.0.0",
-    "time-span": "^2.0.0"
+    "time-span": "^3.0.0"
   },
   "devDependencies": {
     "array-dsl": "^1.6.6",
