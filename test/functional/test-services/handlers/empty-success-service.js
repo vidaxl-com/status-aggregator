@@ -9,5 +9,7 @@ module.exports = dslFramework(
     Object.keys(extraParameters)
       .forEach(parameters => arrify(extraParameters[parameters])
         .forEach(item=>statusGenerator[parameters](item)))
-    statusGenerator.addResponse(res)()
+    statusGenerator.addResponse(res)
+      // .request(req)
+      ()
   })

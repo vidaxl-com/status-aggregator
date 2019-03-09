@@ -1,6 +1,6 @@
 {
   "name": "status-aggregator",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Webservice status aggregator",
   "main": "src/index.js",
   "scripts": {
@@ -38,7 +38,7 @@
     "arrify": "^1.0.1",
     "assert": "^1.4.1",
     "chai": "^4.2.0",
-    "cowlog": "^1.6.11",
+    "cowlog": "^1.6.17",
     "debug": "^4.1.1",
     "decamelize": "^2.0.0",
     "depcheck": "^0.7.1",

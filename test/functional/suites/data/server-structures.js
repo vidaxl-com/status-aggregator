@@ -2,8 +2,8 @@ const createHandler = (handler,name)=> ({handler, name})
 const emptySuccessHandler = require('../../test-services/handlers/empty-success-service')
 const emptyFailHander = require('../../test-services/handlers/empty-failure-service')
 //dataCompiler
-const dc = (structure, description, assertData) =>
-  ({structure, description, assertData})
+const dc = (structure, description, assertData, extraData) =>
+  ({structure, description, assertData, extraData})
 
 module.exports = {
   oneserver:{
@@ -95,8 +95,15 @@ module.exports = {
         ], '006.001 none of them fails',
           {
             goodBad: 'ok',
-            outputDatastructure:''
-          }),
+            summary:'--'
+          },
+          {
+            get:{
+              summary:1
+            }
+          }
+        )
+        ,
       ] ,
       fail:[
 

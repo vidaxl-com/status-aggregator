@@ -36,6 +36,12 @@ module.exports= (parameters) => {
     , sessionTokenName = parameters.arguments('sessionToken', 'lastArgument', 'session-token')
     , noSession = parameters.arguments('noSession', 'lastArgument')
     , mockId = parameters.arguments('mockId', 'lastArgument', 'mock')
+    let summary = false
+    if(requestObject){
+      summary = requestObject.query['summary'] || false
+      // l(summary,requestObject.query)()
+    }
+    if(summary) l(summary)()
     let sessionToken = parameters.arguments('sessionToken', 'lastArgument')
     sessionToken = (!noSession && sessionToken) ?
                       sessionToken : (!noSession && requestObject) ?
