@@ -3,7 +3,8 @@ const arrify = require('arrify')
   , callDetails = require('debug')('status-aggregator-test:callDetails')
   , arrayDsl = require('array-dsl')
 
-module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers = []) => {
+module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers = [], addRequestToServerN = false) => {
+  // if(addRequestToServerN)l(addRequestToServerN).die()
   let servers = []
   serviceHandlers = arrify(serviceHandlers)
   return new Promise(async (resolve, reject) => {
@@ -35,7 +36,13 @@ module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers =
           statusGenerator.addApi(servers[i].getStatusUrl())
           callDetails(servers[i].getStatusUrl())
         }
-        statusGenerator.addResponse(res)()
+        statusGenerator.addResponse(res)
+
+        if(addRequestToServerN){
+          statusGenerator.request(req)
+        }
+
+        statusGenerator()
       }])()
     allServers.push(serverN)
     resolve( {

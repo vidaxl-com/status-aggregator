@@ -4,7 +4,7 @@ const {expect} = require('chai')
   , op = require('object-path')
 module.exports = (data, assertData) => {
 // l(assertData,data.data).lol.mute()
-l(assertData,data.data).lol()
+// l(assertData,data.data).lol()
 //   assertLog(`${data.data.status} === ${assertData}`)
 //   expect(data.data.status).to.equal(assertData)
 //   const statusAggregatorResults = data.data.statusAggregatorResults

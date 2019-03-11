@@ -1,9 +1,16 @@
 const extractNumbers = require('extract-numbers')
 const tr = require('./test-runners/base')
 const arrayDsl = require('array-dsl')
+const op = require('object-path')
+
 module.exports = (dataset, assertPath, asserts,
                   testCallback=(tr,assertPath,testData)=>
-                    tr(testData.description, testData.structure, testData.assertData[assertPath], testData.extraData, assertPath)) => {
+                    tr(testData.description,
+                      testData.structure,
+                      testData.assertData[assertPath],
+                      testData.extraData,
+                      assertPath,
+                      op.get(testData,'extraData.get', false))) => {
   const magic = arrayDsl(asserts.map(a=> (
     JSON.stringify({
     order:extractNumbers(a)[0],

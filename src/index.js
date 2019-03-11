@@ -18,11 +18,13 @@ const dslFramework = require('dsl-framework').noPromoises.noTriggerEndOfExecutio
 
 module.exports= dslFramework(
   (e, parameters) => {
+
     let extraData = parameters.arguments('addExtraData', 'allEntries')
     extraData = !!extraData ? flatten(extraData) : false
     const res = parameters.arguments('addResponse', 'lastArgument')
       , oldStyleRequest = parameters.command.has('oldStyleRequest')
-
+      , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
+      , summaryMode = queryParameterValueGetter('summary', false)
     let name = parameters.arguments('name', 'lastArgument',"undefined name")
     return new Promise(async (resolve, reject) => {
       let mysqlResults = await getDbResults('mysql', parameters)
@@ -60,6 +62,7 @@ module.exports= dslFramework(
       if(otherVersions) {
         otherVersions.forEach(entry => op.set(resolveData, `info.version.${entry[0]}`, `info.version.${entry[1]}`))
       }
+
       op.set(resolveData, 'info.version.node', process.version)
       op.set(resolveData, 'info.server.uptime', require('server-uptime'))
 

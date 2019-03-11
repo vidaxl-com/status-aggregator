@@ -20,7 +20,7 @@
 
 module.exports= (parameters) => {
     const timeSpan = require('time-span')
-    , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
+    , queryParameterValueGetter = require('../../query-parameter-value-getter')(parameters)
     , requestTimeout = parameters.arguments('timeout', 'lastArgument', 1000)
     , fail = parameters.command.has('fail')
     , debug = parameters.command.has('debug')
