@@ -10,7 +10,7 @@ module.exports = (dataset, assertPath, asserts,
                       testData.assertData[assertPath],
                       testData.extraData,
                       assertPath,
-                      op.get(testData,'extraData.get', false))) => {
+                      op.get(testData,`extraData.${assertPath}.get`, false))) => {
   const magic = arrayDsl(asserts.map(a=> (
     JSON.stringify({
     order:extractNumbers(a)[0],

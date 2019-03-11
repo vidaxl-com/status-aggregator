@@ -6,16 +6,13 @@ const randomString = () => require('random-string')({
   exclude: ['i', 'm', 'r', 'e','I', 'M', 'R', 'E']
 })
 const camelCase = require('camelcase')
+const op = require('object-path')
 
 module.exports= (parameters) => (name, defaultRandom=true) => {
   const hasRequestObject = parameters.command.has('request')
     , requestObject = parameters.arguments('request', 'lastArgument', hasRequestObject?{query:{}}:false)
     , noCommand = parameters.arguments(camelCase(`no-${name}`), 'lastArgument')
-    // , variableToken = parameters.arguments(camelCase(`${name}-token`), 'lastArgument', `${name}-token`)
-    // , variableToken = parameters.arguments(camelCase(`${name}-token`), 'lastArgument', `${name}-token`)
-    , variableToken = parameters.arguments(`${name}`, 'lastArgument', `${name}`)
-
-  const defaultValue = defaultRandom?randomString():false
+    , defaultValue = defaultRandom?randomString():false
   let value = parameters.arguments(camelCase(`${name}-value`), 'lastArgument')
   value = (!noCommand) ?
             value ?

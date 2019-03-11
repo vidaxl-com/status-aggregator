@@ -38,24 +38,29 @@ module.exports= dslFramework(
         (mysqlResults.status === 'ok') &&
         (mongoResults.status === 'ok') &&
         (couchdbResults.status === 'ok') ? 'ok' : 'bad'
+      let resolveData = {status, name}
+      // l(resolveData,summaryMode)()
+      if(!summaryMode){
+        // l('a').die()
+        resolveData = Object.assign(resolveData, {statusAggregatorResults})
 
-      let resolveData = {status, statusAggregatorResults, name}
+        if(extraData){
+          resolveData = Object.assign(resolveData,{extraData})
+        }
+        if(mysqlResults.results.length){
+          resolveData = Object.assign(resolveData,{mysqlResults})
+        }
+        if(mongoResults.results.length){
+          resolveData = Object.assign(resolveData,{mongoResults})
+        }
+        if(couchdbResults.results.length){
+          resolveData = Object.assign(resolveData,{couchdbResults})
+        }
+        if(elasticResults.results.length){
+          resolveData = Object.assign(resolveData,{elasticResults})
+        }
+      }
 
-      if(extraData){
-        resolveData = Object.assign(resolveData,{extraData})
-      }
-      if(mysqlResults.results.length){
-        resolveData = Object.assign(resolveData,{mysqlResults})
-      }
-      if(mongoResults.results.length){
-        resolveData = Object.assign(resolveData,{mongoResults})
-      }
-      if(couchdbResults.results.length){
-        resolveData = Object.assign(resolveData,{couchdbResults})
-      }
-      if(elasticResults.results.length){
-        resolveData = Object.assign(resolveData,{elasticResults})
-      }
       op.set(resolveData, 'info.version.status-aggregator', require('../package.json').version)
 
       const otherVersions = parameters.arguments('version')

@@ -98,8 +98,10 @@ module.exports = {
             summary:'--'
           },
           {
-            get:{
-              summary:1
+            summary:{
+              get:{
+                summary:1
+              }
             }
           }
         )
