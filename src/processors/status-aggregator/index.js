@@ -16,45 +16,26 @@
   return resultingData
   }
   , op = require('object-path')
-  , randomString = () => require('random-string')({
-    length: 8,
-    numeric: true,
-    letters: true,
-    special: false,
-    exclude: ['i', 'm', 'r', 'e','I', 'M', 'R', 'E']
-  })
+
 
 module.exports= (parameters) => {
     const timeSpan = require('time-span')
+    , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
     , requestTimeout = parameters.arguments('timeout', 'lastArgument', 1000)
     , fail = parameters.command.has('fail')
     , debug = parameters.command.has('debug')
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
-    , hasRequestObject = parameters.command.has('request')
-    , requestObject = parameters.arguments('request', 'lastArgument', hasRequestObject?{query:{}}:false)
-    , sessionTokenName = parameters.arguments('sessionToken', 'lastArgument', 'session-token')
-    , noSession = parameters.arguments('noSession', 'lastArgument')
     , mockId = parameters.arguments('mockId', 'lastArgument', 'mock')
-    let summary = false
-    if(requestObject){
-      summary = requestObject.query['summary'] || false
-      // l(summary,requestObject.query)()
-    }
-    if(summary) l(summary)()
-    let sessionToken = parameters.arguments('sessionToken', 'lastArgument')
-    sessionToken = (!noSession && sessionToken) ?
-                      sessionToken : (!noSession && requestObject) ?
-                        requestObject.query[sessionTokenName] ?
-                          requestObject.query[sessionTokenName]: randomString() : (!noSession) ?
-                    randomString(): false
+    let sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
+
   const sessionModulePath = `session.${mockId}.${sessionToken}`
     if(sessionToken){
       const weGotTheSameSession = op.get(module, sessionModulePath)
       if(weGotTheSameSession){
         return new Promise(async (resolve, reject) => {
           let dataSent = {}
-          dataSent.message = `${sessionTokenName}: ${sessionToken} is already in use on this server. To avoid any memory leaks. This request will not fetch the details`
+          dataSent.message = `${sessionToken} is already in use on this server. To avoid any memory leaks. This request will not fetch the details`
           const d = dataPatcher(dataSent, true, timeSpan)
           resolve(d)
         })
@@ -83,7 +64,7 @@ module.exports= (parameters) => {
         const apiGetterResults = await apiGetter(statusAggregatorApis,
           requestTimeout,
           looseUrlCheck,
-          {sessionToken, sessionTokenName})
+          {sessionToken})
 
         const validApiResponses = apiGetterResults.ok()
 

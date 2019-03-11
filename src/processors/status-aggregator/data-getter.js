@@ -4,12 +4,12 @@ const aFlatten = require('array-flatten')
   , urlBuilder = require('build-url')
 
 module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(async (resolve, reject)=>{
-  const {sessionToken, sessionTokenName} = sessionDetails
+  const {sessionToken} = sessionDetails
   const apisFlattened = aFlatten(apis)
   let apiRequests = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
   if(sessionToken){
     queryParams = {}
-    queryParams[sessionTokenName] = sessionToken
+    queryParams['session'] = sessionToken
     apiRequests = apiRequests.map(url => urlBuilder(url, {
       queryParams
     }))
@@ -22,9 +22,7 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(a
       op.set(result, 'request.timeout', timeout)
       op.set(result, 'request.url.original', apisFlattened[i])
       const requestUrl =  apiRequests[i]
-      if(apisFlattened[i] !== requestUrl){
-        op.set(result, 'request.url.used', requestUrl)
-      }
+      op.set(result, 'request.url.used', requestUrl)
       op.set(result, 'response', {})
 
       try{

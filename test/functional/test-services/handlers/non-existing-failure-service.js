@@ -9,7 +9,8 @@ module.exports = (numberOfServers) => (req,res) => {
       const port = await portscanner.findAPortNotInUse(4001+i, 5000)
       statusGenerator.addApi(`http://localhost:${port}`)
     }
-    statusGenerator.addResponse(res)()
+    statusGenerator.addResponse(res)
+      .request(req)()
     resolve()
   })
 }

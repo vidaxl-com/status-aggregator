@@ -5,11 +5,12 @@ const arrify = require('arrify')
 
 module.exports = dslFramework(
   (e, parameters) => (req, res) => {
+    statusGenerator.request(req)
     const extraParameters = parameters.arguments('extraParameters', 'lastArgument', {})
     Object.keys(extraParameters)
       .forEach(parameters => arrify(extraParameters[parameters])
         .forEach(item=>statusGenerator[parameters](item)))
     statusGenerator.addResponse(res)
-      // .request(req)
+      .request(req)
       ()
   })

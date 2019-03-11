@@ -279,7 +279,7 @@ module.exports =  describe('Plain-server suite', ()=>{
       })
     })
     describe('testing request objects', () => {
-      it('adding request', async ()=>{
+      it('session variables checking', async ()=>{
         const server0 = await serverStarter.handler(
           (req,res)=>{
             statusGenerator
@@ -309,7 +309,8 @@ module.exports =  describe('Plain-server suite', ()=>{
             .name('server')()
         const data = await axios.get(server.getStatusUrl(),{timeout:500})
         expect(data.data.status).to.equal('ok')
-        expect(op.get(data.data, 'statusAggregatorResults.generatedResults.0.request.url.used').includes('?session-token')).to.equal(true)
+        expect(op.get(data.data, 'statusAggregatorResults.generatedResults.0.request.url.used').includes('?session')).to.equal(true)
+
         const responseData = data.data
         let flatData = flatten(responseData)
         const sessionTokens = Object.keys(flatData).filter(path => path.endsWith('request.url.used'))
