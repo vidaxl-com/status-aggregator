@@ -25,6 +25,7 @@ module.exports= dslFramework(
       , oldStyleRequest = parameters.command.has('oldStyleRequest')
       , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
       , summaryMode = queryParameterValueGetter('summary', false)
+      , flatMode = queryParameterValueGetter('flat', false)
     let name = parameters.arguments('name', 'lastArgument',"undefined name")
     return new Promise(async (resolve, reject) => {
       let mysqlResults = await getDbResults('mysql', parameters)
@@ -40,36 +41,18 @@ module.exports= dslFramework(
         (couchdbResults.status === 'ok') ? 'ok' : 'bad'
       let resolveData = {status, name}
       // l(resolveData,summaryMode)()
-      if(!summaryMode){
-        // l('a').die()
-        resolveData = Object.assign(resolveData, {statusAggregatorResults})
+      dependencies = require('./mode/lib/dependencies')
+      (parameters, resolveData, statusAggregatorResults,extraData,mysqlResults,mongoResults,couchdbResults,elasticResults)
 
-        if(extraData){
-          resolveData = Object.assign(resolveData,{extraData})
-        }
-        if(mysqlResults.results.length){
-          resolveData = Object.assign(resolveData,{mysqlResults})
-        }
-        if(mongoResults.results.length){
-          resolveData = Object.assign(resolveData,{mongoResults})
-        }
-        if(couchdbResults.results.length){
-          resolveData = Object.assign(resolveData,{couchdbResults})
-        }
-        if(elasticResults.results.length){
-          resolveData = Object.assign(resolveData,{elasticResults})
-        }
+      if(!summaryMode && !flatMode){
+        resolveData = require('./mode/detailed')(dependencies)
       }
-
-      op.set(resolveData, 'info.version.status-aggregator', require('../package.json').version)
-
-      const otherVersions = parameters.arguments('version')
-      if(otherVersions) {
-        otherVersions.forEach(entry => op.set(resolveData, `info.version.${entry[0]}`, `info.version.${entry[1]}`))
+      if(flatMode && !summaryMode){
+        resolveData = require('./mode/flat')(dependencies)
       }
-
-      op.set(resolveData, 'info.version.node', process.version)
-      op.set(resolveData, 'info.server.uptime', require('server-uptime'))
+      if(summaryMode && !flatMode){
+        resolveData = require('./mode/summary')(dependencies)
+      }
 
       resolve(resolveData)
       if(res){

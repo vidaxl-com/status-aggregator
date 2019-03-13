@@ -95,12 +95,19 @@ module.exports = {
         ], '006.001 none of them fails',
           {
             goodBad: 'ok',
-            summary:'--'
+            summary:'--',
+            flat: '--'
           },
           {
-            summary:{
+            summary: {
+              get: {
+                summary: 1
+              }
+            },
+
+            flat:{
               get:{
-                summary:1
+                flat:1
               }
             }
           }

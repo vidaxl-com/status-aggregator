@@ -3,7 +3,8 @@ const arrify = require('arrify')
   , callDetails = require('debug')('status-aggregator-test:callDetails')
   , arrayDsl = require('array-dsl')
 
-module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers = [], addRequestToServerN = false) => {
+module.serverNameCount = 0
+module.exports =  (serverStarter, statusAggregator, serviceHandlers, allServers = [], addRequestToServerN = false) => {
   // if(addRequestToServerN)l(addRequestToServerN).die()
   let servers = []
   serviceHandlers = arrify(serviceHandlers)
@@ -20,7 +21,7 @@ module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers =
         allServers.push(servers[servers.length-1])
       }
       if(isHandlerArray){
-        let newServerGroup = await module.exports(serverStarter, statusGenerator, serviceHandler, allServers)
+        let newServerGroup = await module.exports(serverStarter, statusAggregator, serviceHandler, allServers)
         servers.push(newServerGroup.serverN)
         allServers.push(newServerGroup.serverN)
       }
@@ -33,16 +34,16 @@ module.exports =  (serverStarter, statusGenerator, serviceHandlers, allServers =
       },
       (req, res) => {
         for(let i = 0; i < servers.length; i++){
-          statusGenerator.addApi(servers[i].getStatusUrl())
+          statusAggregator.addApi(servers[i].getStatusUrl())
           callDetails(servers[i].getStatusUrl())
         }
-        statusGenerator.addResponse(res)
+        statusAggregator.addResponse(res)
 
         if(addRequestToServerN){
-          statusGenerator.request(req)
+          statusAggregator.request(req)
         }
 
-        statusGenerator()
+        statusAggregator()
       }])()
     allServers.push(serverN)
     resolve( {

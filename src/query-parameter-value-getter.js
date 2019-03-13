@@ -23,6 +23,8 @@ module.exports= (parameters) => (name, defaultRandom=true) => {
                 :defaultValue
               :false
             :false
-
+  // if(name === 'summary'){
+  //   l(name,requestObject.query[name],value)()
+  // }
   return value
 }

@@ -1,4 +1,4 @@
-const statusGenerator = require('../../../../../src')
+const statusAggregator = require('../../../../../src')
   , axios = require('axios')
   , serverStarter = require('../../../test-services/serverStarter')
   , decamelize = require('decamelize')
@@ -8,7 +8,7 @@ const statusGenerator = require('../../../../../src')
 module.exports = (name, serviceHandlers, assertData, extraData, checker = 'goodBad', addRequestToServerN) =>{
   const validator = require(`./checkers/${decamelize(checker,'-')}`)
   it(`${name}`, async ()=>{
-    let servers = await require('./more-flat-server-starter')(serverStarter, statusGenerator, serviceHandlers, [], addRequestToServerN)
+    let servers = await require('./more-flat-server-starter')(serverStarter, statusAggregator, serviceHandlers, [], addRequestToServerN)
     let url = servers.serverN.getStatusUrl()
     let extraGet = op.get(extraData, `${checker}.get`)
     if(extraGet){
