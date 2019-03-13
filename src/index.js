@@ -26,7 +26,7 @@ module.exports= dslFramework(
       , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
       , summaryMode = queryParameterValueGetter('summary', false)
       , flatMode = queryParameterValueGetter('flat', false)
-    let name = parameters.arguments('name', 'lastArgument',"undefined name")
+    let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
       let mysqlResults = await getDbResults('mysql', parameters)
       let mongoResults = await getDbResults('mongo', parameters)
@@ -44,14 +44,15 @@ module.exports= dslFramework(
       dependencies = require('./mode/lib/dependencies')
       (parameters, resolveData, statusAggregatorResults,extraData,mysqlResults,mongoResults,couchdbResults,elasticResults)
 
-      if(!summaryMode && !flatMode){
+      if(!summaryMode){
         resolveData = require('./mode/detailed')(dependencies)
       }
-      if(flatMode && !summaryMode){
-        resolveData = require('./mode/flat')(dependencies)
-      }
-      if(summaryMode && !flatMode){
+      if(summaryMode){
         resolveData = require('./mode/summary')(dependencies)
+      }
+
+      if(flatMode){
+        resolveData = require('./mode/flat')(dependencies)
       }
 
       resolve(resolveData)

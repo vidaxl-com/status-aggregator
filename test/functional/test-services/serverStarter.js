@@ -23,7 +23,7 @@ module.exports = dslFramework(
 
     let name = parameters.arguments('name','lastArgument')
     if(!name) {
-     name = `und-${require('random-string')({length: 5})}`
+     name = `undefined-name-${require('random-string')({length: 5})}`
     }
 
     let statusUrlPeice = parameters.arguments('statusUrlPeice','lastArgument')
