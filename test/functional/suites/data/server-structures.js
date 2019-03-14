@@ -95,7 +95,7 @@ module.exports = {
         ], '006.001 none of them fails',
           {
             goodBad: 'ok',
-            summary:'--',
+            // summary:'--',
             flat: '--'
           },
           {
@@ -110,9 +110,7 @@ module.exports = {
                 flat:1
               }
             }
-          }
-        )
-        ,
+          }),
       ] ,
       fail:[
 
@@ -121,7 +119,19 @@ module.exports = {
             [
               createHandler(emptySuccessHandler(),'1.1')
             ]
-          ], '007 the fist layer fails', {goodBad: 'bad'}),
+          ], '007 the fist layer fails',
+          {
+            goodBad: 'bad',
+            summary:2
+          },
+          {
+            summary: {
+              get: {
+                summary: 2
+              }
+            }
+          }),
+
 
         dc( [
             createHandler(emptySuccessHandler(),'1'),
@@ -129,7 +139,18 @@ module.exports = {
               createHandler(emptyFailHander(),'1.1')
             ]
           ],
-          '008 the second layer fails', {goodBad: 'bad'}),
+          '008 the second layer fails',
+          {
+            goodBad: 'bad',
+            // summary: '3'
+          },
+          {
+            summary: {
+              get: {
+                summary: 3
+              }
+            }
+          }),
 
         dc( [createHandler(emptySuccessHandler(),'1'),
             [

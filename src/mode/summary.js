@@ -8,26 +8,46 @@ module.exports = (dependencies) => {
   } = dependencies
   const data = require('./detailed')(dependencies)
   const detailed = {data}
-  const flat = flatten(detailed)
-  const paths = Object.keys(flat).filter(path=>path.endsWith('data.name'))
-  let structure = {}
-  paths.forEach((path, pathIndex) => {
-    const splitMagic = path.split('data.')
-    splitMagic.pop()
-    let pathNameArray = []
-    splitMagic.forEach((splitPath, splitPathIndex)=>{
-      let realPath = ''
-      for(var i = 0;i<=splitPathIndex;i++){
-        realPath += splitMagic[i] + 'data.'
+  const flatDetailed = flatten(detailed)
+  const flatKeys = Object.keys(flatDetailed)
+// l(data).lol.die()
+  const showTree = (endsWith, equalsWith) => {
+    let structure = {}
+    const paths = flatKeys.filter(path=>path.endsWith(endsWith))
+
+    paths.forEach((path, pathIndex) => {
+      const splitMagic = path.split('data.')
+      splitMagic.pop()
+      let pathNameArray = []
+      splitMagic.forEach((splitPath, splitPathIndex)=>{
+        let realPath = ''
+        for(var i = 0;i<=splitPathIndex;i++){
+          realPath += splitMagic[i] + 'data.'
+        }
+        const name = op.get(detailed, realPath + 'name')
+        const noEquals = typeof equalsWith === 'undefined'
+        if(noEquals){
+          pathNameArray.push(name)
+        }
+        if(!noEquals){
+          const tmp = op.get(detailed, path)
+          if(tmp === equalsWith){
+            pathNameArray.push(name)
+          }
+        }
+      })
+      if(pathNameArray.length){
+        op.set(structure, pathNameArray.join('.'))
       }
-      const name = op.get(detailed, realPath + 'name')
-      pathNameArray.push(name)
     })
+    Object.keys(flatten(structure)).forEach((path)=>op.set(structure, path, true))
 
-    op.set(structure, pathNameArray.join('.'))
-  })
-  Object.keys(flatten(structure)).forEach((path)=>op.set(structure, path, true))
-  const returnData = {structure}
+    return structure
+  }
 
-  return returnData
+  const serverStructure = showTree('data.name')
+  const dataStatus = showTree('data.status', 'bad')
+  const errors = {dataStatus}
+
+  return {errors, serverStructure}
 }
