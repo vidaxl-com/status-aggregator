@@ -3,6 +3,7 @@ const {expect} = require('chai')
   , flat = require('flat')
   , op = require('object-path')
 module.exports = (data, assertData) => {
-l(assertData,data.data).lol()
-  console.log(data.data)
+  //todo: make some meaningful tests
+  data = data.data
+  l(assertData,data).lol()
 }

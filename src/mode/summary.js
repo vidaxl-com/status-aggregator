@@ -7,10 +7,6 @@ module.exports = (dependencies) => {
     mongoResults, couchdbResults, elasticResults
   } = dependencies
   const data = require('./detailed')(dependencies)
-
-  // ((data)=>{
-  // })()
-
   const detailed = {data}
   const flat = flatten(detailed)
   const paths = Object.keys(flat).filter(path=>path.endsWith('data.name'))
