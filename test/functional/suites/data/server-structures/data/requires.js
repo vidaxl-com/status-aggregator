@@ -1,2 +1,6 @@
-module.exports = require('require-a-lot')(require)('./one-server', './more')
+module.exports = require('require-a-lot')(require)
+(
+  './one-server',
+  './more'
+)
 

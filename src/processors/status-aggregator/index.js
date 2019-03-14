@@ -26,7 +26,7 @@ module.exports= (parameters) => {
     , debug = parameters.command.has('debug')
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
-    , mockId = parameters.arguments('mockId', 'lastArgument', 'mock')
+    , mockId = parameters.arguments('mockId', 'lastArgument', require('../../lib/random-string-generator')())
     let sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
 
   const sessionModulePath = `session.${mockId}.${sessionToken}`

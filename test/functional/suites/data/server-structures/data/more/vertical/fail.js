@@ -10,12 +10,12 @@ module.exports = [
       ], '007 the fist layer fails',
       {
         goodBad: 'bad',
-        summary:2
+        summary: ['Two servers one fo them fails']
       },
       {
         summary: {
           get: {
-            summary: 2
+            summary: 1
           }
         }
       }),
@@ -30,12 +30,12 @@ module.exports = [
       '008 the second layer fails',
       {
         goodBad: 'bad',
-        summary: '3'
+        summary: ['Two servers one fo them fails']
       },
       {
         summary: {
           get: {
-            summary: 3
+            summary: 1
           }
         }
       }),
