@@ -134,9 +134,9 @@ module.exports = {
 
 
         dc( [
-            createHandler(emptySuccessHandler(),'1'),
+            createHandler(emptySuccessHandler(),'NiceOne'),
             [
-              createHandler(emptyFailHander(),'1.1')
+              createHandler(emptyFailHander(),'BadOne')
             ]
           ],
           '008 the second layer fails',
