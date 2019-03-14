@@ -10,11 +10,9 @@ module.exports = (dependencies) => {
   const detailed = {data}
   const flatDetailed = flatten(detailed)
   const flatKeys = Object.keys(flatDetailed)
-// l(data).lol.die()
   const showTree = (endsWith, equalsWith) => {
     let structure = {}
     const paths = flatKeys.filter(path=>path.endsWith(endsWith))
-
     paths.forEach((path, pathIndex) => {
       const splitMagic = path.split('data.')
       splitMagic.pop()
@@ -41,13 +39,14 @@ module.exports = (dependencies) => {
       }
     })
     Object.keys(flatten(structure)).forEach((path)=>op.set(structure, path, true))
-
+    // if(dbg)l(structure).lol.die()
     return structure
   }
 
   const serverStructure = showTree('data.name')
-  const dataStatus = showTree('data.status', 'bad')
+  const dataStatus = showTree('data.status', 'bad', 1)
   const errors = {dataStatus}
+  const result =  {errors, serverStructure}
 
-  return {errors, serverStructure}
+  return result
 }

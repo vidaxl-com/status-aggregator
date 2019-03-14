@@ -81,21 +81,21 @@ module.exports = {
           ]
         ], '006 none of them fails', {goodBad: 'ok'}),
         dc([
-          createHandler(emptySuccessHandler(),'1'),
+          createHandler(emptySuccessHandler(),'root'),
           [
             [
               [
-                createHandler(emptySuccessHandler(),'1.1'),
-                createHandler(emptySuccessHandler(),'1.2')
+                createHandler(emptySuccessHandler(),'edge1'),
+                createHandler(emptySuccessHandler(),'edge2')
               ]
             ],
-            createHandler(emptySuccessHandler(),'1.1'),
-            createHandler(emptySuccessHandler(),'1.2')
+            createHandler(emptySuccessHandler(),'edge3'),
+            createHandler(emptySuccessHandler(),'edge4')
           ]
         ], '006.001 none of them fails',
           {
             goodBad: 'ok',
-            // summary:'--',
+            // summary:'1',
             flat: '--'
           },
           {
@@ -115,14 +115,14 @@ module.exports = {
       fail:[
 
         dc([
-            createHandler(emptyFailHander(),'1'),
+            createHandler(emptyFailHander(),'mother'),
             [
-              createHandler(emptySuccessHandler(),'1.1')
+              createHandler(emptySuccessHandler(),'child')
             ]
           ], '007 the fist layer fails',
           {
             goodBad: 'bad',
-            summary:2
+            // summary:2
           },
           {
             summary: {
@@ -142,7 +142,7 @@ module.exports = {
           '008 the second layer fails',
           {
             goodBad: 'bad',
-            // summary: '3'
+            summary: '3'
           },
           {
             summary: {

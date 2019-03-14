@@ -12,7 +12,7 @@ const axios = require('axios')
 
 module.exports =  describe('Plain-server suite', ()=>{
   it('successful request', async ()=>{
-    const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
+    const server = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('ok')
     expect(data.data.status).to.equal('ok')
@@ -20,7 +20,7 @@ module.exports =  describe('Plain-server suite', ()=>{
   })
 
   it('failed request', async ()=>{
-    const server = await serverStarter.handler(emptyfailureHandler()).name('fail')()
+    const server = await serverStarter.handler(emptyfailureHandler()()()).name('fail')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('bad')
     expect(data.data.status).to.equal('bad')
@@ -44,7 +44,7 @@ module.exports =  describe('Plain-server suite', ()=>{
 
   it('extraData server', async ()=>{
     const server = await serverStarter
-      .handler(emptySuccessHandler.extraParameters({addExtraData:['yeah','no']})())
+      .handler(emptySuccessHandler()()().extraParameters({addExtraData:['yeah','no']})())
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.extraData[0]).to.equal('yeah')
@@ -54,7 +54,7 @@ module.exports =  describe('Plain-server suite', ()=>{
 
   it('User caused Fail', async ()=>{
     const server = await serverStarter
-      .handler(emptySuccessHandler.extraParameters({fail:['I wanted to Fail It']})())
+      .handler(emptySuccessHandler()()().extraParameters({fail:['I wanted to Fail It']})())
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('bad')
@@ -121,7 +121,7 @@ module.exports =  describe('Plain-server suite', ()=>{
     const removeProtocoll = url => url.replace(/(^\w+:|^)\/\//, '');
     //starting with http:// or https://
     it('good formatted urls', async () => {
-      const server = await serverStarter.handler(emptySuccessHandler()).name('success')()
+      const server = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
       const data = await axios.get(server.getStatusUrl())
       expect(data.data.statusAggregatorResults.status).to.equal('ok')
       expect(data.data.status).to.equal('ok')
@@ -130,7 +130,7 @@ module.exports =  describe('Plain-server suite', ()=>{
 
     describe('bad formatted urls', function () {
       it('default behaviour (fails)', async () => {
-        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
         const server = await serverStarter.handler((req,res)=>{
           const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
           statusGenerator.addResponse(res).addApi(statusWithoutProtocoll)()
@@ -142,7 +142,7 @@ module.exports =  describe('Plain-server suite', ()=>{
       })
 
       it('default behaviour (fail)', async () => {
-        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
         const server = await serverStarter.handler((req,res) =>
           statusGenerator
             .addResponse(res)
@@ -156,7 +156,7 @@ module.exports =  describe('Plain-server suite', ()=>{
       })
 
       it('default behaviour (success) .looseApiUrlCheck()', async () => {
-        const server0 = await serverStarter.handler(emptySuccessHandler()).name('success')()
+        const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
         const server = await serverStarter.handler((req,res)=>{
           const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
           statusGenerator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
