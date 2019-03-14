@@ -1,4 +1,4 @@
-const createHandler = (handler,name)=> ({handler, name})
+const createHandler = (handler,name)=> ({handler:handler(name)(), name})
 const emptySuccessHandler = require('../../test-services/handlers/empty-success-service')
 const emptyFailHander = require('../../test-services/handlers/empty-failure-service')
 //dataCompiler
