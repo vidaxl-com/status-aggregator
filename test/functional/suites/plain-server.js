@@ -44,7 +44,7 @@ module.exports =  describe('Plain-server suite', ()=>{
 
   it('extraData server', async ()=>{
     const server = await serverStarter
-      .handler(emptySuccessHandler()()().extraParameters({addExtraData:['yeah','no']})())
+      .handler(emptySuccessHandler()().extraParameters({addExtraData:['yeah','no']})())
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.extraData[0]).to.equal('yeah')
@@ -54,7 +54,7 @@ module.exports =  describe('Plain-server suite', ()=>{
 
   it('User caused Fail', async ()=>{
     const server = await serverStarter
-      .handler(emptySuccessHandler()()().extraParameters({fail:['I wanted to Fail It']})())
+      .handler(emptySuccessHandler()().extraParameters({fail:['I wanted to Fail It']})())
       .name('extraDataServer')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('bad')

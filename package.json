@@ -51,7 +51,8 @@
     "npm-audit-resolver": "^1.4.0",
     "nyc": "^13.3.0",
     "object-path": "^0.11.4",
-    "portscanner": "^2.2.0"
+    "portscanner": "^2.2.0",
+    "require-a-lot": "^1.6.17"
   },
   "husky": {
     "hooks": {
