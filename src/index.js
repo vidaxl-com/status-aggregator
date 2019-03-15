@@ -25,8 +25,8 @@ module.exports= dslFramework(
     const res = parameters.arguments('addResponse', 'lastArgument')
       , oldStyleRequest = parameters.command.has('oldStyleRequest')
       , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
-      , summaryMode = queryParameterValueGetter('summary', false)
-      , flatMode = queryParameterValueGetter('flat', false)
+      , summaryMode = queryParameterValueGetter('summary', ()=>false)
+      , flatMode = queryParameterValueGetter('flat', ()=>false)
     let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
       let mysqlResults = await getDbResults('mysql', parameters)

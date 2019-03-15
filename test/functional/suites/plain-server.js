@@ -224,7 +224,7 @@ module.exports =  describe('Plain-server suite', ()=>{
           }).name('success by non http url')()
           const data = await axios.get(server.getStatusUrl())
           expect(data.data.status).to.equal('ok')
-          // l(data.data).die()
+
           const responseData = data.data
           let flatData = flatten(responseData)
           Object.keys(flatData).filter(path => path.endsWith())
@@ -234,7 +234,7 @@ module.exports =  describe('Plain-server suite', ()=>{
           expect(op.get(debug,'parameters.looseUrlCheck')).to.equal(true)
           expect(op.get(debug,'parameters.fail.failMsg')).to.equal(false)
           expect(op.get(debug,'parameters.fail.fail')).to.equal(false)
-          expect(op.get(debug,'parameters.timeout')).to.equal(1000)
+          expect(op.get(debug,'parameters.timeout')).to.equal(200)
           expect(op.get(debug,'allTrueGoodResponse.notFail')).to.equal(true)
           expect(op.get(debug,'allTrueGoodResponse.validApiResponses')).to.equal(true)
           expect(op.get(debug,'allTrueGoodResponse.validUrls')).to.equal(true)
