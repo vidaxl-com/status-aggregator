@@ -1,4 +1,6 @@
 const mysql = require('mysql')
+const _ = require('lodash')
+
 module.exports = (config, parameters) =>new Promise(async (resolve, reject)=>{
   const connectTimeout = parameters.arguments('mysqlConnectionTimeout', 'lastArgument', 200)
   config = Object.assign(config, {connectTimeout})
@@ -12,6 +14,7 @@ module.exports = (config, parameters) =>new Promise(async (resolve, reject)=>{
       console.log(err)
     }
     connection.end()
-    resolve({status: connectionStatus, msg, config})
+
+    resolve({status: connectionStatus, msg, config: _.omit(config, 'password')})
   })
 })
