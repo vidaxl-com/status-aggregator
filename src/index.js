@@ -12,6 +12,7 @@ const dslFramework = require('dsl-framework').noPromoises.noTriggerEndOfExecutio
       const result = await require('./processors/databases/base')
       (require(`./processors/databases/${dbType}`))
       (flatten(parameters.arguments(`add${jsUcfirst(dbType)}`, 'allEntries', [])))
+      (parameters)
 
       resolve(result)
     })

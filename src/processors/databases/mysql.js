@@ -1,5 +1,7 @@
 const mysql = require('mysql')
-module.exports = (config) =>new Promise(async (resolve, reject)=>{
+module.exports = (config, parameters) =>new Promise(async (resolve, reject)=>{
+  const connectTimeout = parameters.arguments('mysqlConnectionTimeout', 'lastArgument', 200)
+  config = Object.assign(config, {connectTimeout})
   const connection = mysql.createConnection(config)
   connection.connect(function(err) {
     let connectionStatus = 'ok'

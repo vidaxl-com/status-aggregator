@@ -1,6 +1,6 @@
 const elasticsearch = require('elasticsearch');
 
-module.exports = (config) =>new Promise(async (resolve, reject)=>{
+module.exports = (config, parameters) =>new Promise(async (resolve, reject)=>{
   let client = new elasticsearch.Client(config);
   let status = 'ok'
   try {

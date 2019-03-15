@@ -1,6 +1,6 @@
 // const client = require('nano')
 const axios = require('axios')
-module.exports = (config) =>new Promise(async (resolve, reject)=>{
+module.exports = (config, parameters) =>new Promise(async (resolve, reject)=>{
   let status = 'ok'
   let data = {}
   try{
