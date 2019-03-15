@@ -14,53 +14,60 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(a
       queryParams
     }))
   }
-  const results = []
-    , errorResults = []
-    , errorObjects = []
-    for (let i = 0; i < apiRequests.length; i++) {
-      const result = {}
-      op.set(result, 'request.timeout', timeout)
-      op.set(result, 'request.url.original', apisFlattened[i])
-      const requestUrl =  apiRequests[i]
-      op.set(result, 'request.url.used', requestUrl)
-      op.set(result, 'response', {})
 
-      try{
-        const apiResult = await axios.get(requestUrl, {
-          validateStatus: status => status >= 200 && status < 600, timeout
-        })
-        op.set(result, 'data', apiResult.data)
-        op.set(result, 'response.httpStatus', apiResult.status)
+  const pendingPromises = []
+  for (let i = 0; i < apiRequests.length; i++) {
+    const requestUrl =  apiRequests[i]
+    pendingPromises.push(axios.get(requestUrl, {
+      validateStatus: status => status >= 200 && status < 600, timeout
+    }))
+  }
 
-      }
-      catch (e) {
-        // l(e)('lol')('die')
-        errorObjects.push({
-            pendingData: op.get(e, 'request._currentRequest.socket._pendingData'),
-            currentUrl: op.get(e,'request._currentUrl'),
-            name: e.name,
-            message: e.message,
-            stack: e.stack,
-            response: e.response
-          })
-        errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
-      }
-      results.push(result)
-    }
+  const errorResults = []
+  const errorObjects = []
+  Promise.all(pendingPromises).catch(e=>{
+    errorObjects.push({
+      pendingData: op.get(e, 'request._currentRequest.socket._pendingData'),
+      currentUrl: op.get(e,'request._currentUrl'),
+      name: e.name,
+      message: e.message,
+      stack: e.stack,
+      response: e.response
+    })
+    errorResults.push(`Connecting to ${op.get(e, 'request._currentUrl')} was not successful.`)
 
-    resolve({
-      results,
-      errorResults,
-      errorObjects,
-      ok: function () {
-        return !this.errorResults.length
-      },
-      msg:function () {
-        return this.ok() ?
-          ''
-          :
-          this.errorResults.join('\n')
-      }
+    }).then(promiseResults => {
+      let results = []
+      if(promiseResults)
+      promiseResults.forEach((res, i)=>{
+        const result = {}
+        op.set(result, 'request.timeout', timeout)
+
+        op.set(result, 'request.url.original', apisFlattened[i])
+        const requestUrl =  apiRequests[i]
+        op.set(result, 'request.url.used', requestUrl)
+        op.set(result, 'response', {})
+
+        op.set(result, 'data', res.data)
+        op.set(result, 'response.httpStatus', res.status)
+
+        results.push(result)
+      })
+// l()
+      resolve({
+        results,
+        errorResults,
+        errorObjects,
+        ok: function () {
+          return !this.errorResults.length
+        },
+        msg:function () {
+          return this.ok() ?
+            ''
+            :
+            this.errorResults.join('\n')
+        }
+      })
     })
   })
 
