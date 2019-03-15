@@ -29,11 +29,27 @@ module.exports= dslFramework(
       , flatMode = queryParameterValueGetter('flat', ()=>false)
     let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
-      let mysqlResults = await getDbResults('mysql', parameters)
-      let mongoResults = await getDbResults('mongo', parameters)
-      let couchdbResults = await getDbResults('couchdb', parameters)
-      let elasticResults = await getDbResults('elastic', parameters)
-      let statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
+
+      const data = await Promise.all(
+        [getDbResults('mysql', parameters),
+        getDbResults('mongo', parameters),
+        getDbResults('couchdb', parameters),
+        getDbResults('elastic', parameters),
+        require('./processors/status-aggregator')(parameters)]
+      )
+
+      let mysqlResults = data[0]
+      let mongoResults = data[1]
+      let couchdbResults = data[2]
+      let elasticResults = data[3]
+      let statusAggregatorResults = data[4]
+
+
+      // let mysqlResults = await getDbResults('mysql', parameters)
+      // let mongoResults = await getDbResults('mongo', parameters)
+      // let couchdbResults = await getDbResults('couchdb', parameters)
+      // let elasticResults = await getDbResults('elastic', parameters)
+      // let statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
 
       let status =
         statusAggregatorResults.status === 'ok' &&
