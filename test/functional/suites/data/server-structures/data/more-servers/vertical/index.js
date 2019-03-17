@@ -6,7 +6,12 @@ const {
   emptyFailureService, 
 }  
 // [require-a-lot] sessionTestIncludes end
-= require('./lib/requires')
+  = require('../../../lib/requires')
 const dc = dataCompiler
 
-module.exports = require('./data')
+module.exports = {
+  description: 'Vertical arrangement',
+  success: require('./success') ,
+  fail:require('./fail')
+}
+
