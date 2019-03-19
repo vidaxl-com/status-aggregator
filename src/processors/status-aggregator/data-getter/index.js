@@ -2,15 +2,19 @@ const aFlatten = require('array-flatten')
   , axios = require('axios')
   , op = require('object-path')
   , urlBuilder = require('build-url')
+  , meter = require('./meter')()
 
-module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(async (resolve, reject)=>{
+module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => new Promise(async (resolve, reject)=>{
   const {sessionToken} = sessionDetails
-  const apisFlattened = aFlatten(apis)
-  let apiRequests = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
+    , apisFlattened = aFlatten(apis)
+    , requestObject = parameters.arguments('request', 'lastArgument',{})
+    , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', false) || requestObject.ip ||
+    op.get(requestObject, 'connection.remoteAddress') || 'noIp'
+  const originalApiRequestUrls = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
   if(sessionToken){
     queryParams = {}
     queryParams['session'] = sessionToken
-    apiRequests = apiRequests.map(url => urlBuilder(url, {
+    apiRequests = originalApiRequestUrls.map(url => urlBuilder(url, {
       queryParams
     }))
   }
@@ -18,9 +22,10 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails) => new Promise(a
   const pendingPromises = []
   for (let i = 0; i < apiRequests.length; i++) {
     const requestUrl =  apiRequests[i]
+    const meters = meter.add(originalApiRequestUrls[i], sessionToken, requestAddress)
+    l(meters).lol()
     pendingPromises.push(axios.get(requestUrl, {
-      validateStatus: status => status >= 200 && status < 600, timeout
-    }))
+    validateStatus: status => status >= 200 && status < 600, timeout}))
   }
 
   const errorResults = []

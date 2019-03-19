@@ -28,7 +28,9 @@ module.exports= (parameters) => {
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
     , mockId = parameters.arguments('mockId', 'lastArgument', require('../../lib/random-string-generator')())
-    let sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
+    , sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
+    // , requestObject = parameters.arguments('request', 'lastArgument',{})
+    // , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', op.get(requestObject, 'connection.remoteAddress'))
 
   const sessionModulePath = `session.${mockId}.${sessionToken}`
     if(sessionToken){
@@ -65,7 +67,7 @@ module.exports= (parameters) => {
         const apiGetterResults = await apiGetter(statusAggregatorApis,
           requestTimeout,
           looseUrlCheck,
-          {sessionToken})
+          {sessionToken}, parameters)
 
         const validApiResponses = apiGetterResults.ok()
 
