@@ -23,7 +23,7 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => n
   for (let i = 0; i < apiRequests.length; i++) {
     const requestUrl =  apiRequests[i]
     const meters = meter.add(originalApiRequestUrls[i], sessionToken, requestAddress)
-    l(meters).lol()
+    // l(meters).lol()
     pendingPromises.push(axios.get(requestUrl, {
     validateStatus: status => status >= 200 && status < 600, timeout}))
   }
