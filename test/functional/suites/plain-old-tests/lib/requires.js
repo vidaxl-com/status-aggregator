@@ -10,7 +10,8 @@ module.exports = require('require-a-lot')(require)
   'extract-numbers',
   '../../../../../src',
   'object-path',
-  'flat'
+  'flat',
+  './servers-patch'
 ).from('chai',['expect'])
   .alias('src', 'statusAggregator').alias('object-path', 'op').alias('flat', 'flatten')
   //remove the comment below if you want to update your requires
