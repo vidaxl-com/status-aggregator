@@ -13,7 +13,6 @@ module.exports = require('require-a-lot')(require)
   'flat'
 ).from('chai',['expect'])
   .alias('src', 'statusAggregator').alias('object-path', 'op').alias('flat', 'flatten')
-  .tag("sessionTestIncludes")
-  .linkDirectory(path.join(__dirname, '../', 'session'))
-  // .log.info
+  //remove the comment below if you want to update your requires
+  // .tag("sessionTestIncludes").linkDirectory(path.join(__dirname, '../../')).log.info.removeUnused
 ()

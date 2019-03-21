@@ -1,9 +1,9 @@
 // [require-a-lot] sessionTestIncludes begin
 const {
-  createHandler, 
-  dataCompiler, 
-  emptySuccessService, 
-  emptyFailureService, 
+  createHandler, //reative path: ./create-handler
+  dataCompiler, //reative path: ./data-compiler
+  emptySuccessService, //reative path: ../../../../test-services/handlers/empty-success-service
+  emptyFailureService, //reative path: ../../../../test-services/handlers/empty-failure-service
 }  
 // [require-a-lot] sessionTestIncludes end
   = require('../../lib/requires')
