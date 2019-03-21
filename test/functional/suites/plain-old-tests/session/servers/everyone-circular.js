@@ -64,7 +64,7 @@ module.exports = async()=>{
     await serverStarter.handler((req,res)=>{
       addApis(statusAggregator,statusUrls)
         .addResponse(res)
-        .mockId('c')
+        .mockId('d')
         .name('003')
         .request(req)()
     }).name('s4')(),
@@ -72,7 +72,7 @@ module.exports = async()=>{
     await serverStarter.handler((req,res)=>{
       addApis(statusAggregator,statusUrls)
         .addResponse(res)
-        .mockId('c')
+        .mockId('e')
         .name('004')
         .request(req)()
     }).name('s5')(),
@@ -80,7 +80,7 @@ module.exports = async()=>{
     await serverStarter.handler((req,res)=>{
       addApis(statusAggregator,statusUrls)
         .addResponse(res)
-        .mockId('c')
+        .mockId('f')
         .name('005')
         .request(req)()
     }).name('s6')()
