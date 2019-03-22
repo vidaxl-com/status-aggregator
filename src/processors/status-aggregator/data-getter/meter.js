@@ -1,7 +1,8 @@
 const { Meter, MetricRegistry } = require ('inspector-metrics')
-, registry = new MetricRegistry()
-  , getCounter = (object, counterId) => op.get(object,counterId,op.set(object,counterId,registry.newMeter(counterId)))
-  , getCounterPaths = (counterId) =>
+const op = require('object-path')
+const registry = new MetricRegistry()
+const getCounter = (object, counterId) => op.get(object,counterId,op.set(object,counterId,registry.newMeter(counterId)))
+const getCounterPaths = (counterId) =>
     counterId.split('.').map((entry,cnt,counterArray)=>{
     const resultingArray = []
     for(let i = 0;i<=cnt;i++){
@@ -10,9 +11,9 @@ const { Meter, MetricRegistry } = require ('inspector-metrics')
     return resultingArray.join('.')
 
   })
-, arrify = require('arrify')
-, replaceAll = require("replaceall")
-, replaceAllInAll = (from,to,inThose) => arrify(inThose).map(string=>replaceAll(from,to,string))
+const arrify = require('arrify')
+const replaceAll = require("replaceall")
+const replaceAllInAll = (from,to,inThose) => arrify(inThose).map(string=>replaceAll(from,to,string))
 
 module.exports = exports = () => {
   const measurements = op.get(exports,'measurements',op.set(exports,'measurements', {}))

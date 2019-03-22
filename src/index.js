@@ -1,22 +1,9 @@
+const{
+  sendStatusReport,
+  getDbResults,
+} = require('./core/index')
+const flatten = require('array-flatten')
 const dslFramework = require('dsl-framework').noPromoises.noTriggerEndOfExecution()
-  op = require('object-path')
-  , flatten = require('array-flatten')
-  , sendStatusReport = async (res, resultingData, oldStyleRequest) =>
-        new Promise((resolve, reject) =>{
-          const {responseSend} = require('./sever-data-adapters/express-restify-adapter')(oldStyleRequest)
-          responseSend(res, resultingData)
-          resolve(resultingData)
-        })
-  , jsUcfirst = (string) => string.charAt(0).toUpperCase() + string.slice(1)
-  , getDbResults = (dbType, parameters) => new Promise(async (resolve, reject) => {
-      const result = await require('./processors/databases/base')
-      (require(`./processors/databases/${dbType}`))
-      (flatten(parameters.arguments(`add${jsUcfirst(dbType)}`, 'allEntries', [])))
-      (parameters)
-
-      resolve(result)
-    })
-
 module.exports= dslFramework(
   (e, parameters) => {
 
