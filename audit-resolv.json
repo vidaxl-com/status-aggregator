@@ -1,0 +1,11 @@
+{
+  "788|depcheck>js-yaml": {
+    "ignore": 1
+  },
+  "788|husky>cosmiconfig>js-yaml": {
+    "ignore": 1
+  },
+  "788|mocha>js-yaml": {
+    "ignore": 1
+  }
+}

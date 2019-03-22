@@ -1,4 +1,3 @@
-l()
 // [require-a-lot] sessionTestIncludes begin
 const {
   axios, //axios@0.18.0 | https://github.com/axios/axios | Promise based HTTP client for the browser and node.js

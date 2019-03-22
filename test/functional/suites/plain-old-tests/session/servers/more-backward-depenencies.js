@@ -1,9 +1,9 @@
 // [require-a-lot] sessionTestIncludes begin
 const {
   serverStarter, //reative path: ../../../test-services/serverStarter
-  statusAggregator,
-  serversPatch,
-}
+  statusAggregator, 
+  serversPatch, //reative path: ./servers-patch
+}  
 // [require-a-lot] sessionTestIncludes end
   = require('../../lib/requires')
 module.exports = async()=>{

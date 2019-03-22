@@ -3,9 +3,7 @@ const {
   axios, //axios@0.18.0 | https://github.com/axios/axios | Promise based HTTP client for the browser and node.js
   expect, //*tag* of chai | chai@4.2.0 | http://chaijs.com | BDD/TDD assertion library for node.js and the browser. T...
   op, //*alias* of object-path | object-path@0.11.4 | https://github.com/mariocasciaro/object-path | Access deep obje...
-  flatten, //*alias* of flat | flat@4.1.0 | https://github.com/hughsk/flat | Take a nested Javascript object and flat...
-  arrayDsl
-}
+}  
 // [require-a-lot] sessionTestIncludes end
   = require('../lib/requires')
 

@@ -45,7 +45,7 @@
     "cowlog": "^1.6.17",
     "debug": "^4.1.1",
     "decamelize": "^2.0.0",
-    "depcheck": "^0.7.1",
+    "depcheck": "^0.7.2",
     "express": "^4.16.4",
     "extract-numbers": "^1.0.2",
     "flat": "^4.1.0",
@@ -55,7 +55,7 @@
     "nyc": "^13.3.0",
     "object-path": "^0.11.4",
     "portscanner": "^2.2.0",
-    "require-a-lot": "^1.6.28"
+    "require-a-lot": "^1.6.29"
   },
   "husky": {
     "hooks": {
