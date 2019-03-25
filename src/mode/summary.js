@@ -3,8 +3,7 @@ const flatten = require('flat')
 
 module.exports = (dependencies) => {
   const {
-    parameters, resolveData, statusAggregatorResults, extraData, mysqlResults,
-    mongoResults, couchdbResults, elasticResults
+    parameters, resolveData, statusAggregatorResults, extraData, dbResults
   } = dependencies
   const data = require('./detailed')(dependencies)
   const detailed = {data}

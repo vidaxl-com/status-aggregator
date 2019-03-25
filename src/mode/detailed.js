@@ -1,7 +1,13 @@
 const op = require('object-path')
 module.exports = (dependencies) => {
-  const {parameters, resolveData,statusAggregatorResults,extraData,mysqlResults,
-    mongoResults,couchdbResults,elasticResults} = dependencies
+  const {parameters, resolveData, statusAggregatorResults, extraData, dbResults} = dependencies
+  
+  const {
+    couchdbResults,
+    elasticResults,
+    mongoResults,
+    mysqlResults
+  } = dbResults
 
   let results = {}
   Object.assign(results, resolveData)

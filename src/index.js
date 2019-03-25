@@ -4,6 +4,8 @@ const{
 } = require('./core/index')
 const flatten = require('array-flatten')
 const dslFramework = require('dsl-framework').noPromoises.noTriggerEndOfExecution()
+const path = require('path')
+const fs = require('fs')
 module.exports= dslFramework(
   (e, parameters) => {
 
@@ -17,18 +19,23 @@ module.exports= dslFramework(
       , shallow = queryParameterValueGetter('shallow', ()=>false)
     let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
-
-      const data = await Promise.all(
-        [getDbResults('mysql', parameters),
-        getDbResults('mongo', parameters),
-        getDbResults('couchdb', parameters),
-        getDbResults('elastic', parameters)]
+      const databaseModules = fs.readdirSync(path.join(__dirname, 'processors/databases'))
+        .filter(item => item!=='base.js')
+        .map(item=>item.split('.')[0])
+      const databasePromises = databaseModules.map(item => getDbResults(item, parameters))
+      // Getting database data.
+      const databaseFeedbackData = await Promise.all(
+        databasePromises
       )
-
-      let mysqlResults = data[0]
-      let mongoResults = data[1]
-      let couchdbResults = data[2]
-      let elasticResults = data[3]
+      let dbStatus = true
+      const dbResults = {}
+      //mapping and collecting information from the database modules
+      databaseFeedbackData.forEach((e,i)=>{
+        dbResults[databaseModules[i]+'Results'] = e
+        if(dbStatus){
+          dbStatus = e.status === 'ok'
+        }
+      })
 
       let statusAggregatorResults = false
       if(!shallow){
@@ -40,13 +47,12 @@ module.exports= dslFramework(
           (statusAggregatorResults &&
           statusAggregatorResults.status === 'ok') || !statusAggregatorResults
         )&&
-        (mysqlResults.status === 'ok') &&
-        (mongoResults.status === 'ok') &&
-        (couchdbResults.status === 'ok') ? 'ok' : 'bad'
+        dbStatus
+          ? 'ok' : 'bad'
       let resolveData = {status, name}
       // l(resolveData,summaryMode)()
       dependencies = require('./mode/lib/dependencies')
-      (parameters, resolveData, statusAggregatorResults,extraData,mysqlResults,mongoResults,couchdbResults,elasticResults)
+      (parameters, resolveData, statusAggregatorResults, extraData, dbResults)
 
       if(!summaryMode){
         resolveData = require('./mode/detailed')(dependencies)
