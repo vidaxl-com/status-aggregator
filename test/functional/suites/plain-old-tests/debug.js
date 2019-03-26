@@ -39,7 +39,7 @@ module.exports =  describe('testing debug', ()=> {
       expect(op.get(debug,'parameters.looseUrlCheck')).to.equal(true, 'parameters.looseUrlCheck')
       expect(op.get(debug,'parameters.fail.failMsg')).to.equal(false, 'parameters.fail.failMsg')
       expect(op.get(debug,'parameters.fail.fail')).to.equal(false, 'parameters.fail.fail')
-      expect(op.get(debug,'parameters.timeout')).to.equal(200, 'parameters.timeout')
+      // expect(op.get(debug,'parameters.timeout')).to.equal(200, 'parameters.timeout')
       expect(op.get(debug,'allTrueGoodResponse.notFail')).to.equal(true, 'allTrueGoodResponse.notFail')
       expect(op.get(debug,'allTrueGoodResponse.validApiResponses')).to.equal(true, 'allTrueGoodResponse.validApiResponses')
       expect(op.get(debug,'allTrueGoodResponse.validUrls')).to.equal(true, 'allTrueGoodResponse.validUrls')
