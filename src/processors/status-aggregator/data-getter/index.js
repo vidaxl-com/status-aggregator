@@ -6,14 +6,20 @@ const aFlatten = require('array-flatten')
 
 module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => new Promise(async (resolve, reject)=>{
   const {sessionToken} = sessionDetails
+    , {requestTimeout, defaultTimeout} = timeout
     , apisFlattened = aFlatten(apis)
     , requestObject = parameters.arguments('request', 'lastArgument',{})
     , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', false) || requestObject.ip ||
     op.get(requestObject, 'connection.remoteAddress') || 'noIp'
   const originalApiRequestUrls = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
-  if(sessionToken){
+  const setTimeoutGetParameter = requestTimeout !== defaultTimeout
+  if(sessionToken || setTimeoutGetParameter){
     queryParams = {}
     queryParams['session'] = sessionToken
+    queryParams = setTimeoutGetParameter? (()=>{
+      queryParams['timeout'] = requestTimeout
+      return queryParams
+    })(): queryParams
     apiRequests = originalApiRequestUrls.map(url => urlBuilder(url, {
       queryParams
     }))
@@ -25,7 +31,7 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => n
     // const meters = meter.add(originalApiRequestUrls[i], sessionToken, requestAddress)
     // l(meters).lol()
     pendingPromises.push(axios.get(requestUrl, {
-    validateStatus: status => status >= 200 && status < 600, timeout}))
+    validateStatus: status => status >= 200 && status < 600, requestTimeout}))
   }
 
   const errorResults = []
@@ -46,7 +52,7 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => n
       if(promiseResults)
       promiseResults.forEach((res, i)=>{
         const result = {}
-        op.set(result, 'request.timeout', timeout)
+        op.set(result, 'request.timeout', requestTimeout)
 
         op.set(result, 'request.url.original', apisFlattened[i])
         const requestUrl =  apiRequests[i]
