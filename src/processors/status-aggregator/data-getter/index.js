@@ -2,7 +2,7 @@ const aFlatten = require('array-flatten')
   , axios = require('axios')
   , op = require('object-path')
   , urlBuilder = require('build-url')
-  , meter = require('./meter')()
+  // , meter = require('./meter')()
 
 module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => new Promise(async (resolve, reject)=>{
   const {sessionToken} = sessionDetails
@@ -22,7 +22,7 @@ module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => n
   const pendingPromises = []
   for (let i = 0; i < apiRequests.length; i++) {
     const requestUrl =  apiRequests[i]
-    const meters = meter.add(originalApiRequestUrls[i], sessionToken, requestAddress)
+    // const meters = meter.add(originalApiRequestUrls[i], sessionToken, requestAddress)
     // l(meters).lol()
     pendingPromises.push(axios.get(requestUrl, {
     validateStatus: status => status >= 200 && status < 600, timeout}))
