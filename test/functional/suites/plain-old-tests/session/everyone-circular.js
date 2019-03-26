@@ -23,5 +23,6 @@ module.exports =  describe('circular depencencies', ()=> {
     // checkers.numberOfNames(33)
     checkers.numberOfUniqueNames(6)
     servers.stopAll()
+    // l(servers.map(s=>s.getStatusUrl())).lol()
   })
 })

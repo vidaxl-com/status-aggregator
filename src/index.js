@@ -11,7 +11,8 @@ module.exports= dslFramework(
 
     let extraData = parameters.arguments('addExtraData', 'allEntries')
     extraData = !!extraData ? flatten(extraData) : false
-    const res = parameters.arguments('addResponse', 'lastArgument')
+    const datePatcher = require('./lib/date-pathcer')()
+      , res = parameters.arguments('addResponse', 'lastArgument')
       , oldStyleRequest = parameters.command.has('oldStyleRequest')
       , queryParameterValueGetter = require('./query-parameter-value-getter')(parameters)
       , summaryMode = queryParameterValueGetter('summary', ()=>false)
@@ -65,7 +66,7 @@ module.exports= dslFramework(
         resolveData = require('./mode/flat')(dependencies)
       }
 
-      resolve(resolveData)
+      resolve(datePatcher(resolveData))
       if(res){
         sendStatusReport(res, resolveData, oldStyleRequest)
       }

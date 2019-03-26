@@ -1,17 +1,14 @@
   const apiGetter = require('./data-getter')
-  , dataPatcher = (data, success = true, timeSpan) => {
+  , dataPatcher = (data, success = true, datePatcher) => {
     if(!data.failMessage){
       delete data.failMessage
     }
-  let resultingData = Object.assign(
-    data,
-    {
-      status:success?'ok':'bad',
-      timer:{
-        durationMs: timeSpan()(),
-        sent:new Date().toUTCString()
-      },
-    })
+    let resultingData = Object.assign(
+      data,
+      {
+        status:success?'ok':'bad',
+      })
+    return datePatcher(resultingData)
 
   return resultingData
   }
@@ -19,7 +16,9 @@
 
 
 module.exports= (parameters) => {
-    const timeSpan = require('time-span')
+  const datePatcher = require('../../lib/date-pathcer')()
+
+  const timeSpan = require('time-span')
     , queryParameterValueGetter = require('../../query-parameter-value-getter')(parameters)
     , requestTimeout = parameters.arguments('timeout', 'lastArgument',
         queryParameterValueGetter('timeout', ()=>3000))
@@ -39,7 +38,7 @@ module.exports= (parameters) => {
         return new Promise(async (resolve, reject) => {
           let dataSent = {}
           dataSent.message = `${sessionToken} is already in use on this server. To avoid any memory leaks. This request will not fetch the details`
-          const d = dataPatcher(dataSent, true, timeSpan)
+          const d = dataPatcher(dataSent, true, datePatcher)
           resolve(d)
         })
       }
@@ -106,7 +105,7 @@ module.exports= (parameters) => {
           op.set(dataSent,'debug.response.errors', apiGetterResults.errorObjects)
         }
       }
-      const d = dataPatcher(dataSent, stat, timeSpan)
+      const d = dataPatcher(dataSent, stat, datePatcher)
       d.generatedResults = generatedResults;
       if(sessionToken){
         op.del(module, sessionModulePath)
