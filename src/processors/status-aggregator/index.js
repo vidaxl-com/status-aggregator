@@ -26,25 +26,20 @@ module.exports= (parameters) => {
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
     , mockId = parameters.arguments('mockId', 'lastArgument', require('../../lib/random-string-generator')())
+    , namedSessions = parameters.command.has('namedSessions')
     , sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
+    , namedSessionArray = !!namedSessions?sessionToken.split(','):false
     // , requestObject = parameters.arguments('request', 'lastArgument',{})
     // , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', op.get(requestObject, 'connection.remoteAddress'))
   const sessionModulePath = `session.${mockId}.${sessionToken}`
-    if(sessionToken){
-      const weGotTheSameSession = op.get(module, sessionModulePath)
-      if(weGotTheSameSession){
-        return new Promise(async (resolve, reject) => {
-          let dataSent = {}
-          dataSent.message = sessionToken + ' session token is already in use on this server.'
-                                          + ' To avoid any memory leaks. This request will not fetch the details'
-          const d = dataPatcher(dataSent, true, datePatcher)
-          resolve(d)
-        })
+    if(sessionToken && !namedSessionArray){
+      let {returnThis} = require('./session/plain')(module, sessionModulePath, sessionToken)
+      if(returnThis){
+        return returnThis
       }
-
-      if(!weGotTheSameSession){
-        op.set(module, sessionModulePath, true)
-      }
+    }
+    if(sessionToken && namedSessionArray) {
+      const myMachineIsInvolvedInThisSession = op.get(module, sessionModulePath)
 
     }
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')

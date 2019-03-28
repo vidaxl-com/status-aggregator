@@ -5,18 +5,18 @@ const {
   op, //*alias* of object-path | object-path@0.11.4 | https://github.com/mariocasciaro/object-path | Access deep obje...
 }
 // [require-a-lot] sessionTestIncludes end
-  = require('../lib/requires')
+  = require('../../lib/requires')
 
 module.exports =  describe('circular depencencies', ()=> {
   it('test', async ()=>{
     //todo: check if all server gave feedback
-    const servers = await require('./servers/everyone-circular')()
+    const servers = await require('../servers/everyone-circular')()
     const data = await axios.get(servers[5].getStatusUrl(),{timeout:500})
     expect(data.data.status).to.equal('ok')
     expect(op.get(data.data, 'statusAggregatorResults.generatedResults.0.request.url.used').includes('?session')).to.equal(true)
 
     const responseData = data.data
-    const checkers = require('./lib/checkers')(responseData)
+    const checkers = require('../lib/checkers')(responseData)
 
     checkers.numberOfSessionTokens(30, `circular tokens`)
     checkers.numberOfUniqueSessionTokens(1,`circular unique tokens`)
