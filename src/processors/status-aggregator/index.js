@@ -1,46 +1,34 @@
   const apiGetter = require('./data-getter')
-  , dataPatcher = (data, success = true, datePatcher) => {
-    if(!data.failMessage){
-      delete data.failMessage
-    }
-    let resultingData = Object.assign(
-      data,
-      {
-        status:success?'ok':'bad',
-      })
-    return datePatcher(resultingData)
-
-  return resultingData
-  }
+  , dataPatcher = require('./data-pathcer')
   , op = require('object-path')
 
-
 module.exports= (parameters) => {
-  const datePatcher = require('../../lib/date-pathcer')()
-    , queryParameterValueGetter = require('../../query-parameter-value-getter')(parameters)
-    , defaultTimeout = 3000
-    , getTimeout = queryParameterValueGetter('timeout', ()=>defaultTimeout)
-    , requestTimeout = parameters.arguments('timeout', 'lastArgument',getTimeout)
-    , fail = parameters.command.has('fail')
-    , debug = parameters.command.has('debug')
-    , failMsg = parameters.arguments('fail', 'lastArgument')
-    , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
-    , mockId = parameters.arguments('mockId', 'lastArgument', require('../../lib/random-string-generator')())
-    , namedSessions = parameters.command.has('namedSessions')
-    , sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
-    , namedSessionArray = !!namedSessions?sessionToken.split(','):false
-    // , requestObject = parameters.arguments('request', 'lastArgument',{})
-    // , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', op.get(requestObject, 'connection.remoteAddress'))
+  const queryParameterValueGetter = require('../../query-parameter-value-getter')(parameters)
+  , defaultTimeout = 3000
+  , getTimeout = queryParameterValueGetter('timeout', ()=>defaultTimeout)
+  , requestTimeout = parameters.arguments('timeout', 'lastArgument',getTimeout)
+  , fail = parameters.command.has('fail')
+  , debug = parameters.command.has('debug')
+  , failMsg = parameters.arguments('fail', 'lastArgument')
+  , name = parameters.arguments('name', 'lastArgument')
+  , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
+  , mockId = parameters.arguments('mockId', 'lastArgument', require('../../lib/random-string-generator')())
+  , sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
+  , namedSession = parameters.command.has('namedSession')
+  , namedSessionToken = namedSession ? queryParameterValueGetter('named-session') || false : false
+  , namedSessionArray = !!namedSession?namedSessionToken.split(','):false
+  , arrayDsl = require('array-dsl')
+
   const sessionModulePath = `session.${mockId}.${sessionToken}`
-    if(sessionToken && !namedSessionArray){
-      let {returnThis} = require('./session/plain')(module, sessionModulePath, sessionToken)
+    if(sessionToken){
+      let {returnThis} = require('./session-validation/plain')(module, sessionModulePath, sessionToken)
       if(returnThis){
         return returnThis
       }
     }
-    if(sessionToken && namedSessionArray) {
+    if(namedSessionArray) {
+      arrayDsl(namedSessionArray).xor([name])
       const myMachineIsInvolvedInThisSession = op.get(module, sessionModulePath)
-
     }
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
     return new Promise(async (resolve, reject) => {
@@ -58,9 +46,8 @@ module.exports= (parameters) => {
         let validUrls = true
 
         const apiGetterResults = await apiGetter(statusAggregatorApis,
-          {requestTimeout, defaultTimeout},
-          looseUrlCheck,
-          {sessionToken}, parameters)
+          {requestTimeout, defaultTimeout}, looseUrlCheck,
+          {sessionToken, namedSessionArray}, parameters)
 
         const validApiResponses = apiGetterResults.ok()
 
@@ -99,7 +86,7 @@ module.exports= (parameters) => {
           op.set(dataSent,'debug.response.errors', apiGetterResults.errorObjects)
         }
       }
-      const d = dataPatcher(dataSent, stat, datePatcher)
+      const d = dataPatcher(dataSent, stat)
       d.generatedResults = generatedResults;
       if(sessionToken){
         op.del(module, sessionModulePath)

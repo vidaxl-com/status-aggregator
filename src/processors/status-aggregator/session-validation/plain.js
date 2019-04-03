@@ -31,3 +31,4 @@ module.exports = (module, sessionModulePath, sessionToken) => {
   }
   return returnObject
 }
+

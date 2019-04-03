@@ -37,7 +37,7 @@ module.exports = async()=>{
         statusAggregator
           .addResponse(res)
           .mockId('a')
-          .sessionTypeName
+          .namedSession
           .request(req)()
       }
     ).name('s1')(),
@@ -48,7 +48,7 @@ module.exports = async()=>{
           .addResponse(res)
           .mockId('b')
           .name('001')
-          .sessionTypeName
+          .namedSession
           .request(req)()
       }).name('s2')(),
 
@@ -59,7 +59,7 @@ module.exports = async()=>{
         .addResponse(res)
         .mockId('c')
         .name('002')
-        .sessionTypeName
+        .namedSession
         .request(req)()
     }).name('s3')(),
 
@@ -68,7 +68,7 @@ module.exports = async()=>{
         .addResponse(res)
         .mockId('d')
         .name('003')
-        .sessionTypeName
+        .namedSession
         .request(req)()
     }).name('s4')(),
 
@@ -77,7 +77,7 @@ module.exports = async()=>{
         .addResponse(res)
         .mockId('e')
         .name('004')
-        .sessionTypeName
+        .namedSession
         .request(req)()
     }).name('s5')(),
 
@@ -86,7 +86,7 @@ module.exports = async()=>{
         .addResponse(res)
         .mockId('f')
         .name('005')
-        .sessionTypeName
+        .namedSession
         .request(req)()
     }).name('s6')()
   ]

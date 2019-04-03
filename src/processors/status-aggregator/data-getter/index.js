@@ -5,17 +5,20 @@ const aFlatten = require('array-flatten')
   // , meter = require('./meter')()
 
 module.exports = (apis, timeout, looseUrlCheck, sessionDetails, parameters) => new Promise(async (resolve, reject)=>{
-  const {sessionToken} = sessionDetails
-    , {requestTimeout, defaultTimeout} = timeout
+  let {sessionToken, namedSessionArray} = sessionDetails
+  const {requestTimeout, defaultTimeout} = timeout
     , apisFlattened = aFlatten(apis)
     , requestObject = parameters.arguments('request', 'lastArgument',{})
-    , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', false) || requestObject.ip ||
-    op.get(requestObject, 'connection.remoteAddress') || 'noIp'
+    , name = parameters.arguments('name', 'lastArgument')
+
+  op.get(requestObject, 'connection.remoteAddress') || 'noIp'
   const originalApiRequestUrls = looseUrlCheck ? apisFlattened.map(url=>require('addhttp')(url)) : apisFlattened
   const setTimeoutGetParameter = requestTimeout !== defaultTimeout
-  if(sessionToken || setTimeoutGetParameter){
+  if(sessionToken || setTimeoutGetParameter || namedSessionArray){
     queryParams = {}
     queryParams['session'] = sessionToken
+    queryParams = namedSessionArray?Object.assign(queryParams,{'session-name':namedSessionArray.join(',')}):queryParams
+    // if(namedSessionArray)l(queryParams).lol()
     queryParams = setTimeoutGetParameter? (()=>{
       queryParams['timeout'] = requestTimeout
       return queryParams

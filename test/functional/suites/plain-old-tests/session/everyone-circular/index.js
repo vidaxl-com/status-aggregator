@@ -1,1 +1,4 @@
-require('./simple-session')
+describe('circular depencencies', ()=> {
+  require('./simple-session')
+  require('./name-session')
+})

@@ -7,22 +7,24 @@ const {
 // [require-a-lot] sessionTestIncludes end
   = require('../../lib/requires')
 
-module.exports =  describe('circular depencencies', ()=> {
+module.exports =  describe('name-session', ()=> {
   it('test', async ()=>{
     //todo: check if all server gave feedback
-    const servers = await require('../servers/everyone-circular')()
+    const servers = await require('../servers/everyone-circular-name')()
     const data = await axios.get(servers[5].getStatusUrl(),{timeout:500})
+    l(servers.map(e=>e.getStatusUrl())).lol()
     expect(data.data.status).to.equal('ok')
     expect(op.get(data.data, 'statusAggregatorResults.generatedResults.0.request.url.used').includes('?session')).to.equal(true)
 
     const responseData = data.data
     const checkers = require('../lib/checkers')(responseData)
 
-    checkers.numberOfSessionTokens(30, `circular tokens`)
-    checkers.numberOfUniqueSessionTokens(1,`circular unique tokens`)
+    // checkers.numberOfSessionTokens(30, `circular tokens`)
+    // checkers.numberOfUniqueSessionTokens(1,`circular unique tokens`)
     // checkers.numberOfNames(33)
-    checkers.numberOfUniqueNames(6)
-    servers.stopAll()
+    // checkers.numberOfUniqueNames(6)
+
+    // servers.stopAll()
     // l(servers.map(s=>s.getStatusUrl())).lol()
   })
 })
