@@ -5,6 +5,7 @@ module.exports =  describe('Database suite', ()=> {
       require('./mongo')
       require('./couchdb')
       require('./elastic')
+      require('./redis')
     }():
     null
 })
