@@ -6,7 +6,8 @@ module.exports = (dependencies) => {
     couchdbResults,
     elasticResults,
     mongoResults,
-    mysqlResults
+    mysqlResults,
+    redisResults
   } = dbResults
 
   let results = {}
@@ -28,6 +29,9 @@ module.exports = (dependencies) => {
   }
   if(elasticResults.results.length){
     results = Object.assign(resolveData,{elasticResults})
+  }
+  if(redisResults.results.length){
+    results = Object.assign(resolveData,{redisResults})
   }
   op.set(results, 'info.version.status-aggregator', require('../../package.json').version)
 
