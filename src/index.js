@@ -18,6 +18,8 @@ module.exports= dslFramework(
       , flatMode = queryParameterValueGetter('flat', ()=>false)
       , shallow = queryParameterValueGetter('shallow', ()=>false)
       , mockId = parameters.arguments('mockId', 'lastArgument', require('./lib/random-string-generator')())
+      , sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
+
 
     let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
@@ -41,7 +43,7 @@ module.exports= dslFramework(
 
       let statusAggregatorResults = false
       if(!shallow){
-        statusAggregatorResults = await require('./processors/status-aggregator')(parameters, mockId)
+        statusAggregatorResults = await require('./processors/status-aggregator')(parameters, mockId, sessionToken)
       }
 
       let status =
