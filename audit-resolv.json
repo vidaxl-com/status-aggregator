@@ -7,5 +7,17 @@
   },
   "788|mocha>js-yaml": {
     "ignore": 1
+  },
+  "803|npm>libcipm>npm-lifecycle>node-gyp>tar": {
+    "ignore": 1
+  },
+  "803|npm>libnpm>npm-lifecycle>node-gyp>tar": {
+    "ignore": 1
+  },
+  "803|npm>node-gyp>tar": {
+    "ignore": 1
+  },
+  "803|npm>npm-lifecycle>node-gyp>tar": {
+    "ignore": 1
   }
 }

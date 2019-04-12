@@ -15,7 +15,7 @@
   , op = require('object-path')
 
 
-module.exports= (parameters) => {
+module.exports= (parameters, mockId) => {
   const datePatcher = require('../../lib/date-pathcer')()
     , queryParameterValueGetter = require('../../query-parameter-value-getter')(parameters)
     , defaultTimeout = 3000
@@ -25,7 +25,6 @@ module.exports= (parameters) => {
     , debug = parameters.command.has('debug')
     , failMsg = parameters.arguments('fail', 'lastArgument')
     , looseUrlCheck = parameters.command.has('looseApiUrlCheck')
-    , mockId = parameters.arguments('mockId', 'lastArgument', require('../../lib/random-string-generator')())
     , namedSessions = parameters.command.has('namedSessions')
     , sessionToken = parameters.arguments('sessionToken', 'lastArgument', queryParameterValueGetter('session'))
     , namedSessionArray = !!namedSessions?sessionToken.split(','):false
