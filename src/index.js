@@ -8,7 +8,6 @@ const path = require('path')
 const fs = require('fs')
 module.exports= dslFramework(
   (e, parameters) => {
-
     let extraData = parameters.arguments('addExtraData', 'allEntries')
     extraData = !!extraData ? flatten(extraData) : false
     const datePatcher = require('./lib/date-pathcer')()
@@ -18,6 +17,8 @@ module.exports= dslFramework(
       , summaryMode = queryParameterValueGetter('summary', ()=>false)
       , flatMode = queryParameterValueGetter('flat', ()=>false)
       , shallow = queryParameterValueGetter('shallow', ()=>false)
+      , mockId = parameters.arguments('mockId', 'lastArgument', require('./lib/random-string-generator')())
+
     let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
       const databaseModules = fs.readdirSync(path.join(__dirname, 'processors/databases'))
@@ -40,7 +41,7 @@ module.exports= dslFramework(
 
       let statusAggregatorResults = false
       if(!shallow){
-        statusAggregatorResults = await require('./processors/status-aggregator')(parameters)
+        statusAggregatorResults = await require('./processors/status-aggregator')(parameters, mockId)
       }
 
       let status =
