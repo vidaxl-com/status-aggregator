@@ -32,8 +32,8 @@ module.exports= (parameters, name, mockId, sessionToken) => {
     if(!sessionToken && !namedSessions){
       sessionToken = require('../../lib/random-string-generator')()
     }
+    const sessionModulePath = `session.${mockId}.${sessionToken}`
     if(!namedSessions){
-      const sessionModulePath = `session.${mockId}.${sessionToken}`
       let {returnThis} = require('./session/plain')(module, sessionModulePath, sessionToken)
       if(returnThis){
         return returnThis
