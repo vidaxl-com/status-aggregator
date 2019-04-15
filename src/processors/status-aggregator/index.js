@@ -15,7 +15,7 @@
   , op = require('object-path')
 
 
-module.exports= (parameters, mockId, sessionToken) => {
+module.exports= (parameters, name, mockId, sessionToken) => {
   const datePatcher = require('../../lib/date-pathcer')()
     , queryParameterValueGetter = require('../../query-parameter-value-getter')(parameters)
     , defaultTimeout = 3000
@@ -29,16 +29,23 @@ module.exports= (parameters, mockId, sessionToken) => {
     , namedSessionArray = !!namedSessions?sessionToken.split(','):false
     // , requestObject = parameters.arguments('request', 'lastArgument',{})
     // , requestAddress = op.get(requestObject, 'headers.x-forwarded-for', op.get(requestObject, 'connection.remoteAddress'))
-  const sessionModulePath = `session.${mockId}.${sessionToken}`
-    if(sessionToken && !namedSessionArray){
+    if(!sessionToken && !namedSessions){
+      sessionToken = require('../../lib/random-string-generator')()
+    }
+    if(!namedSessions){
+      const sessionModulePath = `session.${mockId}.${sessionToken}`
       let {returnThis} = require('./session/plain')(module, sessionModulePath, sessionToken)
       if(returnThis){
         return returnThis
       }
     }
-    if(sessionToken && namedSessionArray) {
-      const myMachineIsInvolvedInThisSession = op.get(module, sessionModulePath)
-
+    if(namedSessions){
+      if (namedSessionArray.indexOf(name) !== -1) {
+        return {status: 'ok'};
+      } else {
+        sessionToken += sessionToken ? ',' + name : name;
+      }
+      // const myMachineIsInvolvedInThisSession = op.get(module, sessionModulePath)
     }
     let statusAggregatorApis = parameters.arguments('addApi', 'allEntries')
     return new Promise(async (resolve, reject) => {
@@ -99,7 +106,7 @@ module.exports= (parameters, mockId, sessionToken) => {
       }
       const d = dataPatcher(dataSent, stat, datePatcher)
       d.generatedResults = generatedResults;
-      if(sessionToken){
+      if(sessionToken && !namedSessions){
         op.del(module, sessionModulePath)
       }
       resolve(d)
