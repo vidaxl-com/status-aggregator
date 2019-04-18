@@ -3,7 +3,7 @@ const {
   createHandler, //reative path: ./create-handler
   dataCompiler, //reative path: ./data-compiler
   emptySuccessService, //reative path: ../../../../test-services/handlers/empty-success-service
-}  
+}
 // [require-a-lot] sessionTestIncludes end
   = require('../../../lib/requires')
 const dc = dataCompiler

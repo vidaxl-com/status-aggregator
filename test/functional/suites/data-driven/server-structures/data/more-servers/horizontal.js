@@ -4,7 +4,7 @@ const {
   dataCompiler, //reative path: ./data-compiler
   emptySuccessService, //reative path: ../../../../test-services/handlers/empty-success-service
   emptyFailureService, //reative path: ../../../../test-services/handlers/empty-failure-service
-}  
+}
 // [require-a-lot] sessionTestIncludes end
   = require('../../lib/requires')
 const dc = dataCompiler
