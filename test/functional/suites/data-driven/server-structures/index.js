@@ -1,9 +1,9 @@
-// [require-a-lot] sessionTestIncludes begin
+// [require-a-lot] testIncludes begin
 const {
-  dataCompiler, //reative path: ./data-compiler
+  dataCompiler, //reative path: ./functional/suites/data-driven/server-structures/lib/data-compiler
 }
-// [require-a-lot] sessionTestIncludes end
-= require('./lib/requires')
+// [require-a-lot] testIncludes end
+= require('../../../../requires')
 const dc = dataCompiler
 
 module.exports = require('./data')

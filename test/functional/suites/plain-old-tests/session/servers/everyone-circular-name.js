@@ -5,7 +5,7 @@ const {
   serversPatch, //reative path: ./servers-patch
 }
 // [require-a-lot] sessionTestIncludes end
-  = require('../../lib/requires')
+  = require('../../../../../requires')
 
 const addApis = (statusAggregator, statusUrls) => {
   statusUrls.forEach(url=>{

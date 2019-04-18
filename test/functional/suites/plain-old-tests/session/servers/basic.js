@@ -1,11 +1,12 @@
-// [require-a-lot] sessionTestIncludes begin
+// [require-a-lot] testIncludes begin
 const {
-  serverStarter, //reative path: ../../../test-services/serverStarter
-  statusAggregator, 
-  serversPatch, //reative path: ./servers-patch
-}  
-// [require-a-lot] sessionTestIncludes end
-  = require('../../lib/requires')
+  serverStarter, //reative path: ./functional/test-services/serverStarter
+  serversPatch, //reative path: ./functional/suites/plain-old-tests/lib/servers-patch
+  statusAggregator,
+}
+// [require-a-lot] testIncludes end
+  = require('../../../../../requires')
+// l(statusAggregator).die()
 module.exports = async()=>{
   const returnArray = [
 

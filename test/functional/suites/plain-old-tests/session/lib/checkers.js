@@ -1,12 +1,12 @@
-// [require-a-lot] sessionTestIncludes begin
+// [require-a-lot] testIncludes begin
 const {
-  assert, //assert@1.4.1 | https://github.com/defunctzombie/commonjs-assert | commonjs assert - node.js api compatible
   op, //*alias* of object-path | object-path@0.11.4 | https://github.com/mariocasciaro/object-path | Access deep obje...
   flatten, //*alias* of flat | flat@4.1.0 | https://github.com/hughsk/flat | Take a nested Javascript object and flat...
-  arrayDsl, 
-}  
-// [require-a-lot] sessionTestIncludes end
-  = require('../../lib/requires')
+  assert, //node module: assert
+  arrayDsl,
+}
+// [require-a-lot] testIncludes end
+  = require('../../../../../requires')
 
 const conditionChecker = (condition, errorMsg='', extraMsg='') => {
   assert(condition, `${errorMsg}${extraMsg?' actual:'+extraMsg:extraMsg}`)

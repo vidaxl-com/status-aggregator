@@ -1,11 +1,11 @@
 // [require-a-lot] sessionTestIncludes begin
 const {
   serverStarter, //reative path: ../../../test-services/serverStarter
-  statusAggregator, 
+  statusAggregator,
   serversPatch, //reative path: ./servers-patch
-}  
+}
 // [require-a-lot] sessionTestIncludes end
-  = require('../../lib/requires')
+  = require('../../../../../requires')
 
 const addApis = (statusAggregator, statusUrls) => {
   statusUrls.forEach(url=>{

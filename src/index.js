@@ -20,7 +20,6 @@ module.exports= dslFramework(
       , mockId = parameters.arguments('mockId', 'lastArgument', require('./lib/random-string-generator')())
       , sessionToken = queryParameterValueGetter('session', ()=>'')
 
-
     let name = parameters.arguments('name', 'lastArgument',`undefined-name-${require('./lib/random-string-generator')()}`)
     return new Promise(async (resolve, reject) => {
       const databaseModules = fs.readdirSync(path.join(__dirname, 'processors/databases'))
@@ -54,13 +53,14 @@ module.exports= dslFramework(
         dbStatus
           ? 'ok' : 'bad'
       let resolveData = {status, name}
-      // l(resolveData,summaryMode)()
+
       dependencies = require('./mode/lib/dependencies')
       (parameters, resolveData, statusAggregatorResults, extraData, dbResults)
 
       if(!summaryMode){
         resolveData = require('./mode/detailed')(dependencies)
       }
+
       if(summaryMode){
         resolveData = require('./mode/summary')(dependencies)
       }
