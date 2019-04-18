@@ -1,10 +1,10 @@
-// [require-a-lot] sessionTestIncludes begin
+// [require-a-lot] testIncludes begin
 const {
-  serverStarter, //reative path: ../../../test-services/serverStarter
+  serverStarter, //reative path: ./functional/test-services/serverStarter
+  serversPatch, //reative path: ./functional/suites/plain-old-tests/lib/servers-patch
   statusAggregator,
-  serversPatch, //reative path: ./servers-patch
 }
-// [require-a-lot] sessionTestIncludes end
+// [require-a-lot] testIncludes end
   = require('../../../../../requires')
 
 const addApis = (statusAggregator, statusUrls) => {
@@ -20,7 +20,7 @@ module.exports = async()=>{
       statusAggregator
         .addResponse(res)
         .mockId('a')
-        .name('000')
+        .name('name-first')
         .request(req)()
     }
   ).name('s1')()
@@ -37,7 +37,7 @@ module.exports = async()=>{
         statusAggregator
           .addResponse(res)
           .mockId('a')
-          .name('000')
+          .name('name-000')
           .request(req)()
       }
     ).name('s1')(),
@@ -47,7 +47,7 @@ module.exports = async()=>{
           addApis(statusAggregator,statusUrls)
           .addResponse(res)
           .mockId('b')
-          .name('001')
+          .name('name-001')
           .request(req)()
       }).name('s2')(),
 
@@ -57,7 +57,7 @@ module.exports = async()=>{
         .addApi(returnArray[1].getStatusUrl())
         .addResponse(res)
         .mockId('c')
-        .name('002')
+        .name('name-002')
         .request(req)()
     }).name('s3')(),
 
@@ -65,7 +65,7 @@ module.exports = async()=>{
       addApis(statusAggregator,statusUrls)
         .addResponse(res)
         .mockId('d')
-        .name('003')
+        .name('name-003')
         .request(req)()
     }).name('s4')(),
 
@@ -73,7 +73,7 @@ module.exports = async()=>{
       addApis(statusAggregator,statusUrls)
         .addResponse(res)
         .mockId('e')
-        .name('004')
+        .name('name-004')
         .request(req)()
     }).name('s5')(),
 
@@ -81,7 +81,7 @@ module.exports = async()=>{
       addApis(statusAggregator,statusUrls)
         .addResponse(res)
         .mockId('f')
-        .name('005')
+        .name('name-005')
         .request(req)()
     }).name('s6')()
   ]

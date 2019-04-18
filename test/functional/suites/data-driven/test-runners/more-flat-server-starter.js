@@ -5,7 +5,6 @@ const arrify = require('arrify')
 
 module.serverNameCount = 0
 module.exports =  (serverStarter, statusAggregator, serviceHandlers, allServers = [], addRequestToServerN = false) => {
-  // if(addRequestToServerN)l(addRequestToServerN).die()
   let servers = []
   serviceHandlers = arrify(serviceHandlers)
   return new Promise(async (resolve, reject) => {

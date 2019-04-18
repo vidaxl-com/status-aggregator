@@ -7,7 +7,7 @@ module.exports =  describe('elasticSearch', ()=>{
 
   it('successful connection', async ()=>{
     const server = await serverStarter.handler((req,res)=>{
-      statusGenerator.addElastic({host: '0.0.0.0:9200'}).addResponse(res)
+      statusAggregator.addElastic({host: '0.0.0.0:9200'}).addResponse(res)
       ()
     }).name('successDatabase')()
     const data = await axios.get(server.getStatusUrl())

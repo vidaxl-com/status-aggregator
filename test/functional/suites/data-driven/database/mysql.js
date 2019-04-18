@@ -6,7 +6,7 @@ const axios = require('axios')
 module.exports = describe('mysql', ()=>{
     it('successful connection to mysql', async ()=>{
       const server = await serverStarter.handler((req,res)=>{
-        statusGenerator.addMysql({
+        statusAggregator.addMysql({
           host     : '0.0.0.0',
           user     : 'user',
           password : 'password',
@@ -22,7 +22,7 @@ module.exports = describe('mysql', ()=>{
 
     it('failed connection to mysql', async ()=>{
       const server = await serverStarter.handler((req,res)=>{
-        statusGenerator.addMysql({
+        statusAggregator.addMysql({
           host     : '0.0.0.0',
           user     : 'user',
           password : 'passwordWrong',

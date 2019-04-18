@@ -6,7 +6,7 @@ const axios = require('axios')
   , nonExistingfailureHandler = require('../../test-services/handlers/non-existing-failure-service')
   , assert = require('assert')
   , extractNumbers = require('extract-numbers')
-  , statusGenerator = require('../../../../src')
+  , statusAggregator = require('../../../../src')
   , op = require('object-path')
   , flatten = require('flat')
 
@@ -26,7 +26,7 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
       const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
       const server = await serverStarter.handler((req, res) => {
         const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
-        statusGenerator.addResponse(res).addApi(statusWithoutProtocoll)()
+        statusAggregator.addResponse(res).addApi(statusWithoutProtocoll)()
       }).name('fail by non http url')()
       const data = await axios.get(server.getStatusUrl())
       expect(data.data.status).to.equal('bad')
@@ -37,7 +37,7 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
     it('default behaviour (fail)', async () => {
       const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
       const server = await serverStarter.handler((req,res) =>
-        statusGenerator
+        statusAggregator
           .addResponse(res)
           .addApi(removeProtocoll(server0.getStatusUrl()))
           .looseApiUrlCheck())
@@ -52,7 +52,7 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
       const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
       const server = await serverStarter.handler((req,res)=>{
         const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
-        statusGenerator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
+        statusAggregator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
       }).name('success by non http url')()
       const data = await axios.get(server.getStatusUrl())
       expect(data.data.status).to.equal('ok')
@@ -63,16 +63,15 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
     describe('bad formatted urls', function () {
       it('Applying .looseApiUrlCheck() but no apis added', async () => {
         const server0 = await serverStarter.handler((req,res)=>{
-          statusGenerator.addResponse(res).looseApiUrlCheck()
+          statusAggregator.addResponse(res).looseApiUrlCheck()
         }).name('Success .looseApiUrlCheck no API to check.')()
 
         const server = await serverStarter.handler((req,res)=>{
-          statusGenerator.addResponse(res).
+          statusAggregator.addResponse(res).
           addApi(server0.getStatusUrl()).looseApiUrlCheck()
         }).name('Success by non http url.')()
 
         const data = await axios.get(server.getStatusUrl())
-        // l(data.data).die()
         expect(data.data.status).to.equal('ok')
         server0.stop()
         server.stop()
@@ -81,16 +80,16 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
       it('success by http url (success) .looseApiUrlCheck()', async () => {
         const server0 = await serverStarter.handler(
           (req,res)=>{
-            statusGenerator.addResponse(res).looseApiUrlCheck()
+            statusAggregator.addResponse(res).looseApiUrlCheck()
           }
         ).name('success')()
         const server01 = await serverStarter.handler(
           (req,res)=>{
-            statusGenerator.addResponse(res).addApi(removeProtocoll(server0.getStatusUrl())).looseApiUrlCheck()
+            statusAggregator.addResponse(res).addApi(removeProtocoll(server0.getStatusUrl())).looseApiUrlCheck()
           }
         ).name('success')()
         const server = await serverStarter.handler((req,res)=>{
-          statusGenerator.addResponse(res).addApi(removeProtocoll(server01.getStatusUrl())).looseApiUrlCheck()
+          statusAggregator.addResponse(res).addApi(removeProtocoll(server01.getStatusUrl())).looseApiUrlCheck()
         }).name('success by non http url')()
         const data = await axios.get(server.getStatusUrl())
         expect(data.data.status).to.equal('ok')

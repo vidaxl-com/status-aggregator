@@ -1,5 +1,12 @@
-const dslFramework = require('dsl-framework')()
-const portscanner = require('portscanner')
+// [require-a-lot] testIncludes begin
+const {
+  dslFramework,
+  portscanner, //portscanner@2.2.0 | https://github.com/baalexander/node-portscanner | Asynchronous port scanner for ...
+}
+// [require-a-lot] testIncludes end
+  = require('../../../requires')
+
+
 const serverShutdownLog = require('debug')('status-aggregator-test:serverShutdown')
 const serverStartupLog = require('debug')('status-aggregator-test:serverStartup')
 

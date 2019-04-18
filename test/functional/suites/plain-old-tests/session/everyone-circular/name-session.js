@@ -7,7 +7,7 @@ const {
 // [require-a-lot] testIncludes end
   = require('../../../../../requires')
 
-module.exports =  describe('circular depencencies', ()=> {
+module.exports =  describe('named sessions', ()=> {
   it('test', async ()=>{
     //todo: check if all server gave feedback
     const servers = await require('../servers/everyone-circular')()

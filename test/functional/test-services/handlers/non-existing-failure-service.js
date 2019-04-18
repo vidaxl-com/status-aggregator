@@ -1,5 +1,5 @@
 const portscanner = require('portscanner')
-  , statusGenerator = require('../../../../src')
+  , statusAggregator = require('../../../../src')
 
 module.exports = (numberOfServers) => (req,res) => {
   new Promise(async (resolve, reject)=>{
@@ -7,9 +7,9 @@ module.exports = (numberOfServers) => (req,res) => {
       // make sure get a non exposed port that does not server anyhing.
       // The tests servers get it form the range 3000-40000
       const port = await portscanner.findAPortNotInUse(4001+i, 5000)
-      statusGenerator.addApi(`http://localhost:${port}`)
+      statusAggregator.addApi(`http://localhost:${port}`)
     }
-    statusGenerator.addResponse(res)
+    statusAggregator.addResponse(res)
       .request(req)()
     resolve()
   })

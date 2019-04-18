@@ -1,4 +1,5 @@
 require('../src')
+require('./functional/test-services/handlers/empty-success-service')
 module.exports = require('require-a-lot')(require)
 (
   './functional/test-services/serverStarter',
@@ -6,15 +7,23 @@ module.exports = require('require-a-lot')(require)
   './functional/suites/data-driven/server-structures/lib/data-compiler',
   './functional/test-services/handlers/empty-success-service',
   './functional/test-services/handlers/empty-failure-service',
+  'decamelize',
   'axios',
   'chai',
-  'object-path',
+  'debug',
   'flat',
+  'object-path',
   'assert',
   'extract-numbers',
   'array-dsl',
   './functional/suites/plain-old-tests/lib/servers-patch',
-  '../src'
+  '../src',
+  'dsl-framework',
+  'portscanner',
+  'arrify',
+  './functional/test-services/handlers/empty-success-service',
+  './functional/test-services/handlers/empty-failure-service',
+  './functional/test-services/handlers/non-existing-failure-service'
 )
 .from('chai',['expect'])
   .alias('src', 'statusAggregator')
@@ -27,3 +36,4 @@ module.exports = require('require-a-lot')(require)
   .info
   .removeUnused
 ()
+

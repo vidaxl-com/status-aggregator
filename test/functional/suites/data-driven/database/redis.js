@@ -7,7 +7,7 @@ module.exports =  describe('redis', ()=>{
 
     it('successful connection', async ()=>{
         const server = await serverStarter.handler((req,res)=>{
-            statusGenerator.addRedis({
+            statusAggregator.addRedis({
                 host     : '0.0.0.0',
                 port     : '6379'
             }).addResponse(res)
@@ -21,7 +21,7 @@ module.exports =  describe('redis', ()=>{
 
     it('failed connection', async ()=>{
         const server = await serverStarter.handler((req,res)=>{
-            statusGenerator.addRedis({
+            statusAggregator.addRedis({
                 host     : '0.0.0.0',
                 port     : '6380'
             }).addResponse(res)

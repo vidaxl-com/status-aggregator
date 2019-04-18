@@ -1,7 +1,13 @@
-const extractNumbers = require('extract-numbers')
+// [require-a-lot] testIncludes begin
+const {
+  op, //*alias* of object-path | object-path@0.11.4 | https://github.com/mariocasciaro/object-path | Access deep obje...
+  extractNumbers,
+  arrayDsl,
+}
+// [require-a-lot] testIncludes end
+  = require('../../../requires')
+
 const tr = require('./test-runners/base')
-const arrayDsl = require('array-dsl')
-const op = require('object-path')
 
 module.exports = (dataset, assertPath, asserts,
                   testCallback=(tr,assertPath,testData)=>

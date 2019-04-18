@@ -7,7 +7,7 @@ module.exports =  describe('mongo', ()=>{
 
   it('successful connection', async ()=>{
     const server = await serverStarter.handler((req,res)=>{
-      statusGenerator.addMongo('mongodb://0.0.0.0:27017').addResponse(res)
+      statusAggregator.addMongo('mongodb://0.0.0.0:27017').addResponse(res)
       ()
     }).name('successDatabase')()
     const data = await axios.get(server.getStatusUrl())
@@ -18,7 +18,7 @@ module.exports =  describe('mongo', ()=>{
 
   it('failed connection', async ()=>{
     const server = await serverStarter.handler((req,res)=>{
-      statusGenerator.addMongo('mongodb://0.0.0.0:27016').addResponse(res)
+      statusAggregator.addMongo('mongodb://0.0.0.0:27016').addResponse(res)
       ()
     }).name('successDatabase')()
     const data = await axios.get(server.getStatusUrl())

@@ -6,7 +6,7 @@ const axios = require('axios')
 module.exports =  describe('couchdb', ()=>{
   it('successful connection', async ()=>{
     const server = await serverStarter.handler((req,res)=>{
-      statusGenerator.addCouchdb('http://0.0.0.0:5984').addResponse(res)
+      statusAggregator.addCouchdb('http://0.0.0.0:5984').addResponse(res)
       ()
     }).name('successDatabase')()
     const data = await axios.get(server.getStatusUrl())
@@ -18,7 +18,7 @@ module.exports =  describe('couchdb', ()=>{
 
   it('failed connection', async ()=>{
     const server = await serverStarter.handler((req,res)=>{
-      statusGenerator.addCouchdb('http://0.0.0.0:5985').addResponse(res)
+      statusAggregator.addCouchdb('http://0.0.0.0:5985').addResponse(res)
       ()
     }).name('successDatabase')()
     const data = await axios.get(server.getStatusUrl())
