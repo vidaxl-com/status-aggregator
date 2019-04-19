@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "package-audit": "node_modules/.bin/check-audit",
-    "depcheck": "node_modules/.bin/depcheck --ignores \"husky,depcheck,assert,inspector-metrics\"",
+    "depcheck": "node_modules/.bin/depcheck --ignores \"husky,decamelize,depcheck,inspector-metrics\"",
     "test": "node_modules/.bin/nyc --reporter=lcov --reporter=clover --reporter=text --cache npm run test-dev",
     "test-dev": "node_modules/.bin/mocha test/*-spec.js",
     "test-quality": "npm run package-audit && npm run depcheck",
@@ -42,6 +42,7 @@
     "chai": "^4.2.0",
     "cowlog": "^1.6.32",
     "debug": "^4.1.1",
+    "decamelize": "^3.2.0",
     "depcheck": "^0.7.2",
     "express": "^4.16.4",
     "extract-numbers": "^1.0.2",

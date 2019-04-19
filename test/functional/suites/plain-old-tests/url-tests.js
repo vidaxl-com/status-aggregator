@@ -1,20 +1,19 @@
-const axios = require('axios')
-  , {expect} = require('chai')
-  , serverStarter = require('../../test-services/serverStarter')
-  , emptySuccessHandler = require('../../test-services/handlers/empty-success-service')
-  , emptyfailureHandler = require('../../test-services/handlers/empty-failure-service')
-  , nonExistingfailureHandler = require('../../test-services/handlers/non-existing-failure-service')
-  , assert = require('assert')
-  , extractNumbers = require('extract-numbers')
-  , statusAggregator = require('../../../../src')
-  , op = require('object-path')
-  , flatten = require('flat')
+// [require-a-lot] testIncludes begin
+const {
+  serverStarter, //reative path: ./functional/test-services/serverStarter
+  emptySuccessService, //reative path: ./functional/test-services/handlers/empty-success-service
+  axios, //axios@0.18.0 | https://github.com/axios/axios | Promise based HTTP client for the browser and node.js
+  expect, //*tag* of chai | chai@4.2.0 | http://chaijs.com | BDD/TDD assertion library for node.js and the browser. T...
+  statusAggregator,
+}
+// [require-a-lot] testIncludes end
+  = require('../../../requires')
 
 module.exports =  describe('basic behaviour without deep nested structures', ()=> {
   const removeProtocoll = url => url.replace(/(^\w+:|^)\/\//, '');
   //starting with http:// or https://
   it('good formatted urls', async () => {
-    const server = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
+    const server = await serverStarter.handler(emptySuccessService()()()).name('success')()
     const data = await axios.get(server.getStatusUrl())
     expect(data.data.statusAggregatorResults.status).to.equal('ok')
     expect(data.data.status).to.equal('ok')
@@ -23,7 +22,7 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
 
   describe('bad formatted urls', function () {
     it('default behaviour (without protocol fails)', async () => {
-      const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
+      const server0 = await serverStarter.handler(emptySuccessService()()()).name('success')()
       const server = await serverStarter.handler((req, res) => {
         const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
         statusAggregator.addResponse(res).addApi(statusWithoutProtocoll)()
@@ -35,7 +34,7 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
     })
 
     it('default behaviour (fail)', async () => {
-      const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
+      const server0 = await serverStarter.handler(emptySuccessService()()()).name('success')()
       const server = await serverStarter.handler((req,res) =>
         statusAggregator
           .addResponse(res)
@@ -49,7 +48,7 @@ module.exports =  describe('basic behaviour without deep nested structures', ()=
     })
 
     it('default behaviour (success) .looseApiUrlCheck()', async () => {
-      const server0 = await serverStarter.handler(emptySuccessHandler()()()).name('success')()
+      const server0 = await serverStarter.handler(emptySuccessService()()()).name('success')()
       const server = await serverStarter.handler((req,res)=>{
         const statusWithoutProtocoll = removeProtocoll(server0.getStatusUrl())
         statusAggregator.addResponse(res).addApi(statusWithoutProtocoll).looseApiUrlCheck()
