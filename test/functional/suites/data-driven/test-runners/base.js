@@ -1,6 +1,6 @@
 // [require-a-lot] testIncludes begin
 const {
-  serverStarter, //reative path: ./functional/test-services/serverStarter
+  serverStarter, //reative path: ./functional/test-services/server-starter
   decamelize, //decamelize@3.2.0 | https://github.com/sindresorhus/decamelize#readme | Convert a camelized string int...
   axios, //axios@0.18.0 | https://github.com/axios/axios | Promise based HTTP client for the browser and node.js
   op, //*alias* of object-path | object-path@0.11.4 | https://github.com/mariocasciaro/object-path | Access deep obje...

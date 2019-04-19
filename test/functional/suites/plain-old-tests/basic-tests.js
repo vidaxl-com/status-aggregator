@@ -1,6 +1,6 @@
 // [require-a-lot] testIncludes begin
 const {
-  serverStarter, //reative path: ./functional/test-services/serverStarter
+  serverStarter, //reative path: ./functional/test-services/server-starter
   emptySuccessService, //reative path: ./functional/test-services/handlers/empty-success-service
   emptyFailureService, //reative path: ./functional/test-services/handlers/empty-failure-service
   axios, //axios@0.18.0 | https://github.com/axios/axios | Promise based HTTP client for the browser and node.js

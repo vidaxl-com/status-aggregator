@@ -2,7 +2,7 @@ require('../src')
 require('./functional/test-services/handlers/empty-success-service')
 module.exports = require('require-a-lot')(require)
 (
-  './functional/test-services/serverStarter',
+  './functional/test-services/server-starter',
   './functional/suites/data-driven/server-structures/lib/create-handler',
   './functional/suites/data-driven/server-structures/lib/data-compiler',
   './functional/test-services/handlers/empty-success-service',

@@ -1,7 +1,6 @@
 const axios = require('axios')
   , {expect} = require('chai')
-  , serverStarter = require('../../../test-services/serverStarter')
-  , statusGenerator = require('../../../../../src')
+  , serverStarter = require('../../../test-services/server-starter')
 
 module.exports = describe('mysql', ()=>{
     it('successful connection to mysql', async ()=>{

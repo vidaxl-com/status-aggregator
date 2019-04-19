@@ -1,6 +1,6 @@
 // [require-a-lot] testIncludes begin
 const {
-  serverStarter, //reative path: ./functional/test-services/serverStarter
+  serverStarter, //reative path: ./functional/test-services/server-starter
   serversPatch, //reative path: ./functional/suites/plain-old-tests/lib/servers-patch
   statusAggregator,
 }
