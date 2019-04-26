@@ -37,7 +37,7 @@
     "time-span": "^3.1.0"
   },
   "devDependencies": {
-    "array-dsl": "^1.6.32",
+    "array-dsl": "^1.6.36",
     "arrify": "^2.0.0",
     "chai": "^4.2.0",
     "cowlog": "^1.6.32",
