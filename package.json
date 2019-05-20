@@ -24,7 +24,7 @@
     "axios": "^0.18.0",
     "build-url": "^1.3.2",
     "camelcase": "^5.2.0",
-    "dsl-framework": "^1.6.30",
+    "dsl-framework": "^1.6.55",
     "elasticsearch": "^15.4.1",
     "ioredis": "^3.2.2",
     "is-url": "^1.2.4",
