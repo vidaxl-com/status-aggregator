@@ -40,7 +40,7 @@
     "array-dsl": "^1.6.32",
     "arrify": "^2.0.0",
     "chai": "^4.2.0",
-    "cowlog": "^1.6.32",
+    "cowlog": "^1.6.55",
     "debug": "^4.1.1",
     "decamelize": "^3.2.0",
     "depcheck": "^0.7.2",
