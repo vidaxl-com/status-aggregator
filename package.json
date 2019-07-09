@@ -43,7 +43,7 @@
     "cowlog": "^1.6.32",
     "debug": "^4.1.1",
     "decamelize": "^3.2.0",
-    "depcheck": "^0.7.2",
+    "depcheck": "^0.8.3",
     "express": "^4.16.4",
     "extract-numbers": "^1.0.2",
     "flat": "^4.1.0",
