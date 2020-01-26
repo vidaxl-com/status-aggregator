@@ -42,7 +42,7 @@
     "chai": "^4.2.0",
     "cowlog": "^1.6.32",
     "debug": "^4.1.1",
-    "decamelize": "^3.2.0",
+    "decamelize": "^4.0.0",
     "depcheck": "^0.7.2",
     "express": "^4.16.4",
     "extract-numbers": "^1.0.2",
