@@ -34,7 +34,7 @@
     "random-string": "^0.2.0",
     "replaceall": "^0.1.6",
     "server-uptime": "^1.0.0",
-    "time-span": "^3.1.0"
+    "time-span": "^4.0.0"
   },
   "devDependencies": {
     "array-dsl": "^1.6.32",
